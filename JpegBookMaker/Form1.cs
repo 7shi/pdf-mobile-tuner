@@ -145,7 +145,6 @@ namespace JpegBookMaker
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine(li.Index.ToString());
             var stp = stop;
             stop = true;
             ListViewItem li1 = null, li2 = null;
@@ -191,8 +190,9 @@ namespace JpegBookMaker
             bmp2fn = path2;
             if (bmp1 != null) bmp1.Dispose();
             if (bmp2 != null) bmp2.Dispose();
-            bmp1 = path1 != null ? new Bitmap(Path.Combine(bmpPath, path1)) : null;
-            bmp2 = path2 != null ? new Bitmap(Path.Combine(bmpPath, path2)) : null;
+            bmp1 = bmp2 = null;
+            if (path1 != null) bmp1 = new Bitmap(Path.Combine(bmpPath, path1));
+            if (path2 != null) bmp2 = new Bitmap(Path.Combine(bmpPath, path2));
             SetBitmap();
 
             Cursor.Current = cur;
@@ -206,12 +206,12 @@ namespace JpegBookMaker
             if (bmp1 != null)
             {
                 bmp1lv = new Bitmap(bmp1);
-                Utils.AdjustLevels(bmp1lv, trackBar1.Value);
+                Utils.AdjustLevels(bmp1lv, checkBox1.Checked ? trackBar1.Value : 5);
             }
             if (bmp2 != null)
             {
                 bmp2lv = new Bitmap(bmp2);
-                Utils.AdjustLevels(bmp2lv, trackBar1.Value);
+                Utils.AdjustLevels(bmp2lv, checkBox1.Checked ? trackBar1.Value : 5);
             }
             panel1.Refresh();
             panel2.Refresh();
@@ -235,8 +235,11 @@ namespace JpegBookMaker
             var bmp = Utils.ResizeImage(img, sz);
             if (bmp == null) return;
 
-            Utils.AdjustContrast(bmp, trackBar2.Value * 32);
-            if (checkBox1.Checked) Utils.GrayScale(bmp);
+            if (checkBox1.Checked)
+            {
+                Utils.AdjustContrast(bmp, trackBar2.Value * 32);
+                Utils.GrayScale(bmp);
+            }
             g.DrawImage(bmp, (sz.Width - bmp.Width) / 2, (sz.Height - bmp.Height) / 2);
             bmp.Dispose();
         }
@@ -312,6 +315,7 @@ namespace JpegBookMaker
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
+            trackBar1.Enabled = trackBar2.Enabled = checkBox1.Checked;
             panel1.Refresh();
             panel2.Refresh();
 
