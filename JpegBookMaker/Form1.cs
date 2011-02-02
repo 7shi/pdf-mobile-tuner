@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -269,12 +270,13 @@ namespace JpegBookMaker
             var sz = panel1.ClientSize;
             int w = sz.Width, h = sz.Height;
             var g = gamma[trackBar1.Value];
-            for (int x = 0, yy = 0; x < w; x++)
-            {
-                int y = (255 - g[x * 256 / w]) * h / 256;
-                if (x > 0) e.Graphics.DrawLine(SystemPens.WindowText, x - 1, yy, x, y);
-                yy = y;
-            }
+            var pts = new PointF[w];
+            for (int x = 0; x < w; x++)
+                pts[x] = new PointF(x, ((float)((255 - g[x * 256 / w]) * h)) / 256);
+            var sm = e.Graphics.SmoothingMode;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.DrawLines(SystemPens.WindowText, pts);
+            e.Graphics.SmoothingMode = sm;
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
