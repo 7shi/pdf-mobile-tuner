@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -11,7 +13,7 @@ namespace JpegBookMaker
 {
     public partial class Form1 : Form
     {
-        private int[][] gamma = new int[11][];
+        private byte[][] gamma = new byte[11][];
 
         public Form1()
         {
@@ -24,7 +26,7 @@ namespace JpegBookMaker
 #endif
             var v = new double[11];
             for (int i = 0; i <= 10; i++)
-                gamma[i] = new int[256];
+                gamma[i] = new byte[256];
             for (int i = 0; i <= 255; i++)
             {
                 v[0] = ((double)i) * 2 / 255 - 1;
@@ -39,7 +41,7 @@ namespace JpegBookMaker
                 }
                 for (int j = 0; j <= 10; j++)
                 {
-                    gamma[j][i] = (int)(((v[j] + 1) * 255 + 1) / 2);
+                    gamma[j][i] = (byte)(((v[j] + 1) * 255 + 1) / 2);
                 }
             }
         }
@@ -110,12 +112,27 @@ namespace JpegBookMaker
             pictureBox2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
         }
 
+        private void ClearPanel()
+        {
+            var b1 = pictureBox1.Image;
+            var b2 = pictureBox2.Image;
+            pictureBox1.Image = null;
+            pictureBox2.Image = null;
+            if (b1 != null) b1.Dispose();
+            if (b2 != null) b2.Dispose();
+            if (bmp1 != null) bmp1.Dispose();
+            if (bmp2 != null) bmp2.Dispose();
+            bmp1 = bmp2 = null;
+            bmpPath1 = bmpPath2 = null;
+        }
+
         bool stop = false;
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog(this) != DialogResult.OK) return;
 
+            ClearPanel();
             stop = true;
             SetBitmap(null, null);
             listView1.Items.Clear();
@@ -179,36 +196,62 @@ namespace JpegBookMaker
             stop = stp;
         }
 
+        Bitmap bmp1, bmp2;
         string bmpPath1, bmpPath2;
 
         private void SetBitmap(string path1, string path2)
         {
+            if (bmpPath1 == path1 && bmpPath2 == path2) return;
+
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
-            var b1 = pictureBox1.Image;
-            var b2 = pictureBox2.Image;
-            Image bmp1 = null, bmp2 = null;
-            if (path1 == bmpPath1)
-                bmp1 = b1;
-            else if (path1 == bmpPath2)
-                bmp1 = b2;
-            else if (path1 != null)
-                bmp1 = new Bitmap(path1);
-            if (path2 == bmpPath2)
-                bmp2 = b2;
-            else if (path2 == bmpPath1)
-                bmp2 = b1;
-            else if (path2 != null)
-                bmp2 = new Bitmap(path2);
             bmpPath1 = path1;
             bmpPath2 = path2;
-            if (b1 != bmp1) pictureBox1.Image = bmp1;
-            if (b2 != bmp2) pictureBox2.Image = bmp2;
-            if (b1 != null && b1 != bmp1 && b1 != bmp2) b1.Dispose();
-            if (b2 != null && b2 != bmp1 && b2 != bmp2) b2.Dispose();
+            if (bmp1 != null) bmp1.Dispose();
+            if (bmp2 != null) bmp2.Dispose();
+            bmp1 = path1 != null ? new Bitmap(path1) : null;
+            bmp2 = path2 != null ? new Bitmap(path2) : null;
+            SetBitmap();
 
             Cursor.Current = cur;
+        }
+
+        private void SetBitmap()
+        {
+            var b1 = pictureBox1.Image;
+            var b2 = pictureBox2.Image;
+            pictureBox1.Image = MakeBitmap(bmp1);
+            pictureBox2.Image = MakeBitmap(bmp2);
+            if (b1 != null) b1.Dispose();
+            if (b2 != null) b2.Dispose();
+        }
+
+        private Bitmap MakeBitmap(Bitmap bmp)
+        {
+            if (bmp == null) return null;
+
+            int w = bmp.Width, h = bmp.Height;
+            var r = new Rectangle(0, 0, w, h);
+
+            var data1 = bmp.LockBits(r, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+            var buf = new byte[w * h * 3];
+            Marshal.Copy(data1.Scan0, buf, 0, buf.Length);
+            bmp.UnlockBits(data1);
+
+            if (trackBar1.Value > 0)
+            {
+                var g = gamma[trackBar1.Value];
+                for (int i = 0; i < buf.Length; i++)
+                    buf[i] = g[buf[i]];
+            }
+
+            var ret = new Bitmap(w, h);
+            var data2 = ret.LockBits(r, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+            Marshal.Copy(buf, 0, data2.Scan0, buf.Length);
+            ret.UnlockBits(data2);
+
+            return ret;
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -235,6 +278,17 @@ namespace JpegBookMaker
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            var cur = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+
+            panel1.Refresh();
+            SetBitmap();
+
+            Cursor.Current = cur;
+        }
+
+        private void panel1_Resize(object sender, EventArgs e)
         {
             panel1.Invalidate();
         }
