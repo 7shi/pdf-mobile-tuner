@@ -120,7 +120,7 @@ namespace JpegBookMaker
             if (bmp1lv != null) bmp1lv.Dispose();
             if (bmp2lv != null) bmp2lv.Dispose();
             bmp1 = bmp2 = bmp1lv = bmp2lv = null;
-            bmpPath1 = bmpPath2 = null;
+            bmp1fn = bmp2fn = null;
         }
 
         bool stop = false;
@@ -135,13 +135,14 @@ namespace JpegBookMaker
             listView1.Items.Clear();
             listView1.BeginUpdate();
             listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
-            var dir = folderBrowserDialog1.SelectedPath;
-            toolStripStatusLabel1.Text = dir;
-            var files = Directory.GetFiles(dir, "*.jpg");
+            bmpPath = folderBrowserDialog1.SelectedPath;
+            toolStripStatusLabel1.Text = bmpPath;
+            var files = Directory.GetFiles(bmpPath, "*.jpg");
             foreach (var file in files)
             {
-                var fn = Path.GetFileNameWithoutExtension(file);
-                listView1.Items.Add(new ListViewItem(fn) { Tag = file, Checked = true });
+                var fn = Path.GetFileName(file);
+                var fn2 = Path.GetFileNameWithoutExtension(file);
+                listView1.Items.Add(new ListViewItem(fn2) { Tag = fn, Checked = true });
             }
             listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
             listView1.EndUpdate();
@@ -194,21 +195,21 @@ namespace JpegBookMaker
         }
 
         Bitmap bmp1, bmp2, bmp1lv, bmp2lv;
-        string bmpPath1, bmpPath2;
+        string bmpPath, bmp1fn, bmp2fn;
 
         private void SetBitmap(string path1, string path2)
         {
-            if (bmpPath1 == path1 && bmpPath2 == path2) return;
+            if (bmp1fn == path1 && bmp2fn == path2) return;
 
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
-            bmpPath1 = path1;
-            bmpPath2 = path2;
+            bmp1fn = path1;
+            bmp2fn = path2;
             if (bmp1 != null) bmp1.Dispose();
             if (bmp2 != null) bmp2.Dispose();
-            bmp1 = path1 != null ? new Bitmap(path1) : null;
-            bmp2 = path2 != null ? new Bitmap(path2) : null;
+            bmp1 = path1 != null ? new Bitmap(Path.Combine(bmpPath, path1)) : null;
+            bmp2 = path2 != null ? new Bitmap(Path.Combine(bmpPath, path2)) : null;
             SetBitmap();
 
             Cursor.Current = cur;
