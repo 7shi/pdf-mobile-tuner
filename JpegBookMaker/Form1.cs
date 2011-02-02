@@ -49,18 +49,22 @@ namespace JpegBookMaker
                 fi = listView1.Items[0];
             if (fi == null) return;
 
-            int index = fi.Index;
+            int index = fi.Index, idx = index;
             int count = listView1.Items.Count;
             bool ok = true;
             for (int i = 0; i < 2; )
             {
-                if (e.Delta > 0) index--; else index++;
-                if (index < 0 || index >= count)
+                if (e.Delta > 0) idx--; else idx++;
+                if (idx < 0 || idx >= count)
                 {
                     if (i == 0) ok = false;
                     break;
                 }
-                if (listView1.Items[index].Checked) i++;
+                if (listView1.Items[index].Checked)
+                {
+                    index = idx;
+                    i++;
+                }
             }
             if (ok)
             {
