@@ -108,6 +108,7 @@ namespace JpegBookMaker
             ClearPanel();
             stop = true;
             SetBitmap(null, null);
+            lastFocused = null;
             listView1.Items.Clear();
             listView1.BeginUpdate();
             listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
@@ -131,14 +132,20 @@ namespace JpegBookMaker
             stop = false;
         }
 
+        ListViewItem lastFocused;
+
         private void ShowPage(ListViewItem li)
         {
+            if (li == lastFocused) return;
+            lastFocused = li;
+
             if (li == null)
             {
                 SetBitmap(null, null);
                 return;
             }
 
+            System.Diagnostics.Debug.WriteLine(li.Index.ToString());
             var stp = stop;
             stop = true;
             ListViewItem li1 = null, li2 = null;
