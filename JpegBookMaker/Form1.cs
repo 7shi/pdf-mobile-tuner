@@ -11,12 +11,35 @@ namespace JpegBookMaker
 {
     public partial class Form1 : Form
     {
+        private int[,] gamma = new int[11, 256];
+
         public Form1()
         {
             InitializeComponent();
             AdjustPanel();
             pictureBox1.MouseWheel += pictureBox_MouseWheel;
             pictureBox2.MouseWheel += pictureBox_MouseWheel;
+#if DEBUG
+            folderBrowserDialog1.SelectedPath = @"D:\pdf2png";
+#endif
+            var v = new double[11];
+            for (int i = 0; i <= 255; i++)
+            {
+                v[0] = ((double)i) * 2 / 255 - 1;
+                v[5] = Math.Sin((((double)i) * 180 / 255 - 90) * Math.PI / 180);
+                v[10] = i < 128 ? -1.0 : 1.0;
+                for (int j = 1; j <= 4; j++)
+                {
+                    var d = ((double)j) / 5;
+                    v[j] = v[0] * (1 - d) + v[5] * d;
+                    var val = 1.0 - Math.Abs(v[j + 4]);
+                    v[j + 5] = (1.0 - val * val) * v[10];
+                }
+                for (int j = 0; j <= 10; j++)
+                {
+                    gamma[j, i] = (int)(((v[j] + 1) * 255 + 1) / 2);
+                }
+            }
         }
 
         private void pictureBox_MouseWheel(object sender, MouseEventArgs e)
@@ -34,7 +57,7 @@ namespace JpegBookMaker
                 if (e.Delta > 0) index--; else index++;
                 if (index < 0 || index >= count)
                 {
-                    ok = false;
+                    if (i == 0) ok = false;
                     break;
                 }
                 if (listView1.Items[index].Checked) i++;
@@ -46,9 +69,21 @@ namespace JpegBookMaker
                 listView1.FocusedItem = fi;
                 listView1.EnsureVisible(index);
                 ShowPage(fi);
+                ClearList(false, true);
+                fi.Selected = true;
                 stop = false;
             }
             listView1.Focus();
+        }
+
+        private void ClearList(bool back, bool sel)
+        {
+            var bc = listView1.BackColor;
+            foreach (ListViewItem li in listView1.Items)
+            {
+                if (back && li.BackColor != bc) li.BackColor = bc;
+                if (sel && li.Selected) li.Selected = false;
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -123,16 +158,15 @@ namespace JpegBookMaker
                 }
             }
             string path1 = null, path2 = null;
-            foreach (ListViewItem li4 in listView1.Items)
-                if (li4.Selected) li4.Selected = false;
+            ClearList(true, false);
             if (li1 != null)
             {
-                li1.Selected = true;
+                li1.BackColor = SystemColors.ControlLight;
                 path1 = li1.Tag.ToString();
             }
             if (li2 != null)
             {
-                li2.Selected = true;
+                li2.BackColor = SystemColors.ControlLight;
                 path2 = li2.Tag.ToString();
             }
             SetBitmap(path1, path2);
@@ -179,6 +213,23 @@ namespace JpegBookMaker
         private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (!stop) ShowPage(listView1.FocusedItem);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            var sz = panel1.ClientSize;
+            int w = sz.Width, h = sz.Height;
+            for (int x = 0, yy = 0; x < w; x++)
+            {
+                int y = (255 - gamma[trackBar1.Value, x * 256 / w]) * h / 256;
+                if (x > 0) e.Graphics.DrawLine(SystemPens.WindowText, x - 1, yy, x, y);
+                yy = y;
+            }
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            panel1.Invalidate();
         }
     }
 }
