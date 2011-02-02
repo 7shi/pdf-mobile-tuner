@@ -14,7 +14,7 @@ namespace JpegBookMaker
 {
     public partial class Form1 : Form
     {
-        private byte[][] gamma = new byte[11][];
+        private byte[][] level = new byte[11][];
 
         public Form1()
         {
@@ -27,7 +27,7 @@ namespace JpegBookMaker
 #endif
             var v = new double[11];
             for (int i = 0; i <= 10; i++)
-                gamma[i] = new byte[256];
+                level[i] = new byte[256];
             for (int i = 0; i <= 255; i++)
             {
                 v[0] = ((double)i) * 2 / 255 - 1;
@@ -42,7 +42,7 @@ namespace JpegBookMaker
                 }
                 for (int j = 0; j <= 10; j++)
                 {
-                    gamma[j][i] = (byte)(((v[j] + 1) * 255 + 1) / 2);
+                    level[j][i] = (byte)(((v[j] + 1) * 255 + 1) / 2);
                 }
             }
         }
@@ -242,9 +242,9 @@ namespace JpegBookMaker
 
             if (trackBar1.Value > 0)
             {
-                var g = gamma[trackBar1.Value];
+                var lv = level[trackBar1.Value];
                 for (int i = 0; i < buf.Length; i++)
-                    buf[i] = g[buf[i]];
+                    buf[i] = lv[buf[i]];
             }
 
             var ret = new Bitmap(w, h);
@@ -269,10 +269,10 @@ namespace JpegBookMaker
         {
             var sz = panel1.ClientSize;
             int w = sz.Width, h = sz.Height;
-            var g = gamma[trackBar1.Value];
+            var lv = level[trackBar1.Value];
             var pts = new PointF[w];
             for (int x = 0; x < w; x++)
-                pts[x] = new PointF(x, ((float)((255 - g[x * 256 / w]) * h)) / 256);
+                pts[x] = new PointF(x, ((float)((255 - lv[x * 256 / w]) * h)) / 256);
             var sm = e.Graphics.SmoothingMode;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.DrawLines(SystemPens.WindowText, pts);
