@@ -131,5 +131,24 @@ namespace JpegBookMaker
             }
             return ret;
         }
+
+        public static void GrayScale(Bitmap bmp)
+        {
+            int w = bmp.Width, h = bmp.Height;
+            var r = new Rectangle(0, 0, w, h);
+
+            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            var buf = new byte[w * h * 3];
+            Marshal.Copy(data.Scan0, buf, 0, buf.Length);
+
+            for (int i = 0; i < buf.Length; i += 3)
+            {
+                int gray = (buf[i] * 117 + buf[i + 1] * 601 + buf[i + 2] * 306 + 512) >> 10;
+                buf[i] = buf[i + 1] = buf[i + 2] = (byte)gray;
+            }
+
+            Marshal.Copy(buf, 0, data.Scan0, buf.Length);
+            bmp.UnlockBits(data);
+        }
     }
 }

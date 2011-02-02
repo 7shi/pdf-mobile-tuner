@@ -229,6 +229,7 @@ namespace JpegBookMaker
             if (bmp == null) return;
 
             Utils.AdjustContrast(bmp, trackBar2.Value * 32);
+            if (checkBox1.Checked) Utils.GrayScale(bmp);
             g.DrawImage(bmp, (sz.Width - bmp.Width) / 2, (sz.Height - bmp.Height) / 2);
             bmp.Dispose();
         }
@@ -295,6 +296,17 @@ namespace JpegBookMaker
             panel1.Refresh();
             panel2.Refresh();
             panel3.Refresh();
+
+            Cursor.Current = cur;
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            var cur = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+
+            panel1.Refresh();
+            panel2.Refresh();
 
             Cursor.Current = cur;
         }

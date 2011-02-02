@@ -43,6 +43,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -64,6 +65,7 @@
             this.splitContainer1.Panel1.Controls.Add(this.panel3);
             this.splitContainer1.Panel1.Controls.Add(this.trackBar1);
             this.splitContainer1.Panel1.Controls.Add(this.trackBar2);
+            this.splitContainer1.Panel1.Controls.Add(this.checkBox1);
             // 
             // splitContainer1.Panel2
             // 
@@ -81,7 +83,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(96, 316);
+            this.listView1.Size = new System.Drawing.Size(96, 300);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.SmallIcon;
@@ -92,7 +94,7 @@
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 316);
+            this.panel3.Location = new System.Drawing.Point(0, 300);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(96, 84);
             this.panel3.TabIndex = 3;
@@ -102,7 +104,7 @@
             // trackBar1
             // 
             this.trackBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar1.Location = new System.Drawing.Point(0, 400);
+            this.trackBar1.Location = new System.Drawing.Point(0, 384);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(96, 45);
             this.trackBar1.TabIndex = 4;
@@ -193,7 +195,7 @@
             // trackBar2
             // 
             this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar2.Location = new System.Drawing.Point(0, 445);
+            this.trackBar2.Location = new System.Drawing.Point(0, 429);
             this.trackBar2.Maximum = 7;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
@@ -201,6 +203,21 @@
             this.trackBar2.TabIndex = 5;
             this.trackBar2.Value = 6;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.checkBox1.Location = new System.Drawing.Point(0, 474);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Padding = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.checkBox1.Size = new System.Drawing.Size(96, 16);
+            this.checkBox1.TabIndex = 1;
+            this.checkBox1.Text = "グレー";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // Form1
             // 
@@ -245,6 +262,7 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
