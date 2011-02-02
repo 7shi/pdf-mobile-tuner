@@ -11,7 +11,7 @@ namespace JpegBookMaker
 {
     public partial class Form1 : Form
     {
-        private int[,] gamma = new int[11, 256];
+        private int[][] gamma = new int[11][];
 
         public Form1()
         {
@@ -20,9 +20,11 @@ namespace JpegBookMaker
             pictureBox1.MouseWheel += pictureBox_MouseWheel;
             pictureBox2.MouseWheel += pictureBox_MouseWheel;
 #if DEBUG
-            folderBrowserDialog1.SelectedPath = @"D:\pdf2png";
+            folderBrowserDialog1.SelectedPath = @"D:\pdf2jpg";
 #endif
             var v = new double[11];
+            for (int i = 0; i <= 10; i++)
+                gamma[i] = new int[256];
             for (int i = 0; i <= 255; i++)
             {
                 v[0] = ((double)i) * 2 / 255 - 1;
@@ -37,7 +39,7 @@ namespace JpegBookMaker
                 }
                 for (int j = 0; j <= 10; j++)
                 {
-                    gamma[j, i] = (int)(((v[j] + 1) * 255 + 1) / 2);
+                    gamma[j][i] = (int)(((v[j] + 1) * 255 + 1) / 2);
                 }
             }
         }
@@ -118,6 +120,7 @@ namespace JpegBookMaker
             SetBitmap(null, null);
             listView1.Items.Clear();
             listView1.BeginUpdate();
+            listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
             var dir = folderBrowserDialog1.SelectedPath;
             toolStripStatusLabel1.Text = dir;
             var files = Directory.GetFiles(dir, "*.jpg");
@@ -126,6 +129,7 @@ namespace JpegBookMaker
                 var fn = Path.GetFileNameWithoutExtension(file);
                 listView1.Items.Add(new ListViewItem(fn) { Tag = file, Checked = true });
             }
+            listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
             listView1.EndUpdate();
             if (listView1.Items.Count > 0)
             {
@@ -146,19 +150,17 @@ namespace JpegBookMaker
 
             var stp = stop;
             stop = true;
-            var first = true;
             ListViewItem li1 = null, li2 = null;
             foreach (ListViewItem li3 in listView1.Items)
             {
                 if (!li3.Checked) continue;
-                if (!first && li1 == null)
+                if (li1 == null)
                     li1 = li3;
                 else
                 {
                     li2 = li3;
                     if (li3.Index >= li.Index) break;
                     li1 = li2 = null;
-                    first = false;
                 }
             }
             string path1 = null, path2 = null;
@@ -166,12 +168,12 @@ namespace JpegBookMaker
             if (li1 != null)
             {
                 li1.BackColor = SystemColors.ControlLight;
-                path1 = li1.Tag.ToString();
+                path1 = li1.Tag as string;
             }
             if (li2 != null)
             {
                 li2.BackColor = SystemColors.ControlLight;
-                path2 = li2.Tag.ToString();
+                path2 = li2.Tag as string;
             }
             SetBitmap(path1, path2);
             stop = stp;
@@ -223,9 +225,10 @@ namespace JpegBookMaker
         {
             var sz = panel1.ClientSize;
             int w = sz.Width, h = sz.Height;
+            var g = gamma[trackBar1.Value];
             for (int x = 0, yy = 0; x < w; x++)
             {
-                int y = (255 - gamma[trackBar1.Value, x * 256 / w]) * h / 256;
+                int y = (255 - g[x * 256 / w]) * h / 256;
                 if (x > 0) e.Graphics.DrawLine(SystemPens.WindowText, x - 1, yy, x, y);
                 yy = y;
             }
