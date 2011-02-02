@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -230,6 +228,7 @@ namespace JpegBookMaker
             var bmp = Utils.ResizeImage(img, sz);
             if (bmp == null) return;
 
+            Utils.AdjustContrast(bmp, trackBar2.Value * 32);
             g.DrawImage(bmp, (sz.Width - bmp.Width) / 2, (sz.Height - bmp.Height) / 2);
             bmp.Dispose();
         }
@@ -259,9 +258,13 @@ namespace JpegBookMaker
             var sz = panel3.ClientSize;
             int w = sz.Width, h = sz.Height;
             var lt = Utils.GetLevelsTable(trackBar1.Value);
+            var ct = Utils.GetContrastTable(trackBar2.Value * 32);
             var pts = new PointF[w];
-            for (int x = 0; x < w; x++)
-                pts[x] = new PointF(x, ((float)((255 - lt[x * 256 / w]) * h)) / 256);
+            for (int i = 0; i < 256; i++)
+            {
+                var x = ((float)i) * w / 256;
+                pts[(int)x] = new PointF(x, ((float)((255 - lt[ct[i]]) * (h - 1))) / 255);
+            }
             var sm = e.Graphics.SmoothingMode;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.DrawLines(SystemPens.WindowText, pts);
@@ -280,6 +283,18 @@ namespace JpegBookMaker
 
             panel3.Refresh();
             SetBitmap();
+
+            Cursor.Current = cur;
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            var cur = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+
+            panel1.Refresh();
+            panel2.Refresh();
+            panel3.Refresh();
 
             Cursor.Current = cur;
         }

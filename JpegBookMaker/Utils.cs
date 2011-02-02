@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace JpegBookMaker
 {
@@ -41,6 +42,33 @@ namespace JpegBookMaker
             return ltable[level];
         }
 
+        public static byte[] GetContrastTable(int center)
+        {
+            if (center < 0) center = 0;
+            if (center > 255) center = 255;
+
+            var table = new byte[256];
+            if (center < 128)
+            {
+                int d = (128 - center) * 2;
+                int range = 256 - d;
+                for (int i = 0; i < range; i++)
+                    table[i] = (byte)((i * 512 / range + 1) / 2);
+                for (int i = range; i < 256; i++)
+                    table[i] = 255;
+            }
+            else
+            {
+                int d = (center - 128) * 2;
+                int range = 256 - d;
+                for (int i = 0; i < d; i++)
+                    table[i] = 0;
+                for (int i = d; i < 256; i++)
+                    table[i] = (byte)(((i - d) * 512 / range + 1) / 2);
+            }
+            return table;
+        }
+
         public static void AdjustLevels(Bitmap bmp, int level)
         {
             int w = bmp.Width, h = bmp.Height;
@@ -57,6 +85,22 @@ namespace JpegBookMaker
                     buf[i] = lt[buf[i]];
             }
 
+            Marshal.Copy(buf, 0, data.Scan0, buf.Length);
+            bmp.UnlockBits(data);
+        }
+
+        public static void AdjustContrast(Bitmap bmp, int center)
+        {
+            if (center == 128) return;
+
+            var table = GetContrastTable(center);
+            int w = bmp.Width, h = bmp.Height;
+            var r = new Rectangle(0, 0, w, h);
+            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            var buf = new byte[w * h * 3];
+            Marshal.Copy(data.Scan0, buf, 0, buf.Length);
+            for (int i = 0; i < buf.Length; i++)
+                buf[i] = table[buf[i]];
             Marshal.Copy(buf, 0, data.Scan0, buf.Length);
             bmp.UnlockBits(data);
         }
