@@ -74,15 +74,19 @@ namespace JpegBookMaker
             int w = bmp.Width, h = bmp.Height;
             var r = new Rectangle(0, 0, w, h);
 
-            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-            var buf = new byte[w * h * 3];
+            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format32bppRgb);
+            var buf = new byte[w * h * 4];
             Marshal.Copy(data.Scan0, buf, 0, buf.Length);
 
             if (level > 0)
             {
                 var lt = ltable[level];
-                for (int i = 0; i < buf.Length; i++)
+                for (int i = 0; i < buf.Length; i += 4)
+                {
                     buf[i] = lt[buf[i]];
+                    buf[i + 1] = lt[buf[i + 1]];
+                    buf[i + 2] = lt[buf[i + 2]];
+                }
             }
 
             Marshal.Copy(buf, 0, data.Scan0, buf.Length);
@@ -96,11 +100,15 @@ namespace JpegBookMaker
             var table = GetContrastTable(center);
             int w = bmp.Width, h = bmp.Height;
             var r = new Rectangle(0, 0, w, h);
-            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-            var buf = new byte[w * h * 3];
+            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format32bppRgb);
+            var buf = new byte[w * h * 4];
             Marshal.Copy(data.Scan0, buf, 0, buf.Length);
-            for (int i = 0; i < buf.Length; i++)
+            for (int i = 0; i < buf.Length; i += 4)
+            {
                 buf[i] = table[buf[i]];
+                buf[i + 1] = table[buf[i + 1]];
+                buf[i + 2] = table[buf[i + 2]];
+            }
             Marshal.Copy(buf, 0, data.Scan0, buf.Length);
             bmp.UnlockBits(data);
         }
@@ -137,14 +145,14 @@ namespace JpegBookMaker
             int w = bmp.Width, h = bmp.Height;
             var r = new Rectangle(0, 0, w, h);
 
-            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-            var buf = new byte[w * h * 3];
+            var data = bmp.LockBits(r, ImageLockMode.ReadWrite, PixelFormat.Format32bppRgb);
+            var buf = new byte[w * h * 4];
             Marshal.Copy(data.Scan0, buf, 0, buf.Length);
 
-            for (int i = 0; i < buf.Length; i += 3)
+            for (int i = 0; i < buf.Length; i += 4)
             {
-                int gray = (buf[i] * 117 + buf[i + 1] * 601 + buf[i + 2] * 306 + 512) >> 10;
-                buf[i] = buf[i + 1] = buf[i + 2] = (byte)gray;
+                buf[i] = buf[i + 1] = buf[i + 2] =
+                    (byte)((buf[i] * 117 + buf[i + 1] * 601 + buf[i + 2] * 306 + 512) >> 10);
             }
 
             Marshal.Copy(buf, 0, data.Scan0, buf.Length);
