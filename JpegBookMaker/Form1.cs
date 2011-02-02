@@ -20,8 +20,8 @@ namespace JpegBookMaker
         {
             InitializeComponent();
             AdjustPanel();
-            pictureBox1.MouseWheel += pictureBox_MouseWheel;
-            pictureBox2.MouseWheel += pictureBox_MouseWheel;
+            panel1.MouseWheel += pictureBox_MouseWheel;
+            panel2.MouseWheel += pictureBox_MouseWheel;
 #if DEBUG
             folderBrowserDialog1.SelectedPath = @"D:\pdf2jpg";
 #endif
@@ -109,21 +109,17 @@ namespace JpegBookMaker
         {
             var sz = splitContainer1.Panel2.ClientSize;
             int w = sz.Width / 2;
-            pictureBox1.Bounds = new Rectangle(0, 0, w, sz.Height);
-            pictureBox2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
+            panel1.Bounds = new Rectangle(0, 0, w, sz.Height);
+            panel2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
         }
 
         private void ClearPanel()
         {
-            var b1 = pictureBox1.Image;
-            var b2 = pictureBox2.Image;
-            pictureBox1.Image = null;
-            pictureBox2.Image = null;
-            if (b1 != null) b1.Dispose();
-            if (b2 != null) b2.Dispose();
             if (bmp1 != null) bmp1.Dispose();
             if (bmp2 != null) bmp2.Dispose();
-            bmp1 = bmp2 = null;
+            if (bmp1lv != null) bmp1lv.Dispose();
+            if (bmp2lv != null) bmp2lv.Dispose();
+            bmp1 = bmp2 = bmp1lv = bmp2lv = null;
             bmpPath1 = bmpPath2 = null;
         }
 
@@ -197,7 +193,7 @@ namespace JpegBookMaker
             stop = stp;
         }
 
-        Bitmap bmp1, bmp2;
+        Bitmap bmp1, bmp2, bmp1lv, bmp2lv;
         string bmpPath1, bmpPath2;
 
         private void SetBitmap(string path1, string path2)
@@ -220,12 +216,12 @@ namespace JpegBookMaker
 
         private void SetBitmap()
         {
-            var b1 = pictureBox1.Image;
-            var b2 = pictureBox2.Image;
-            pictureBox1.Image = MakeBitmap(bmp1);
-            pictureBox2.Image = MakeBitmap(bmp2);
-            if (b1 != null) b1.Dispose();
-            if (b2 != null) b2.Dispose();
+            if (bmp1lv != null) bmp1lv.Dispose();
+            if (bmp2lv != null) bmp2lv.Dispose();
+            bmp1lv = MakeBitmap(bmp1);
+            bmp2lv = MakeBitmap(bmp2);
+            panel1.Refresh();
+            panel2.Refresh();
         }
 
         private Bitmap MakeBitmap(Bitmap bmp)
@@ -265,9 +261,55 @@ namespace JpegBookMaker
             if (!stop) ShowPage(listView1.FocusedItem);
         }
 
+        private void DrawImage(Control target, Graphics g, Image img)
+        {
+            if (img == null) return;
+
+            var sz = target.ClientSize;
+            int w = sz.Width, h = sz.Height;
+            if (w < 1 || h < 1) return;
+
+            int iw = img.Width, ih = img.Height;
+            int hh = ih * w / iw;
+            if (hh < h)
+            {
+                iw = w;
+                ih = hh;
+            }
+            else
+            {
+                iw = iw * h / ih;
+                ih = h;
+            }
+            var im = g.InterpolationMode;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+            g.InterpolationMode = im;
+        }
+
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            var sz = panel1.ClientSize;
+            DrawImage(panel1, e.Graphics, bmp1lv);
+        }
+
+        private void panel1_Resize(object sender, EventArgs e)
+        {
+            panel1.Invalidate();
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+            DrawImage(panel2, e.Graphics, bmp2lv);
+        }
+
+        private void panel2_Resize(object sender, EventArgs e)
+        {
+            panel2.Invalidate();
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+            var sz = panel3.ClientSize;
             int w = sz.Width, h = sz.Height;
             var lv = level[trackBar1.Value];
             var pts = new PointF[w];
@@ -279,20 +321,20 @@ namespace JpegBookMaker
             e.Graphics.SmoothingMode = sm;
         }
 
+        private void panel3_Resize(object sender, EventArgs e)
+        {
+            panel3.Invalidate();
+        }
+
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
-            panel1.Refresh();
+            panel3.Refresh();
             SetBitmap();
 
             Cursor.Current = cur;
-        }
-
-        private void panel1_Resize(object sender, EventArgs e)
-        {
-            panel1.Invalidate();
         }
     }
 }
