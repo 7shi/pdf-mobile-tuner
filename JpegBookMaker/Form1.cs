@@ -14,8 +14,6 @@ namespace JpegBookMaker
 {
     public partial class Form1 : Form
     {
-        private byte[][] level = new byte[11][];
-
         public Form1()
         {
             InitializeComponent();
@@ -25,26 +23,6 @@ namespace JpegBookMaker
 #if DEBUG
             folderBrowserDialog1.SelectedPath = @"D:\pdf2jpg";
 #endif
-            var v = new double[11];
-            for (int i = 0; i <= 10; i++)
-                level[i] = new byte[256];
-            for (int i = 0; i <= 255; i++)
-            {
-                v[0] = ((double)i) * 2 / 255 - 1;
-                v[5] = Math.Sin((((double)i) * 180 / 255 - 90) * Math.PI / 180);
-                v[10] = i < 128 ? -1.0 : 1.0;
-                for (int j = 1; j <= 4; j++)
-                {
-                    var d = ((double)j) / 5;
-                    v[j] = v[0] * (1 - d) + v[5] * d;
-                    var val = 1.0 - Math.Abs(v[j + 4]);
-                    v[j + 5] = (1.0 - val * val) * v[10];
-                }
-                for (int j = 0; j <= 10; j++)
-                {
-                    level[j][i] = (byte)(((v[j] + 1) * 255 + 1) / 2);
-                }
-            }
         }
 
         private void pictureBox_MouseWheel(object sender, MouseEventArgs e)
@@ -219,37 +197,19 @@ namespace JpegBookMaker
         {
             if (bmp1lv != null) bmp1lv.Dispose();
             if (bmp2lv != null) bmp2lv.Dispose();
-            bmp1lv = MakeBitmap(bmp1);
-            bmp2lv = MakeBitmap(bmp2);
+            bmp1lv = bmp2lv = null;
+            if (bmp1 != null)
+            {
+                bmp1lv = new Bitmap(bmp1);
+                Utils.AdjustLevels(bmp1lv, trackBar1.Value);
+            }
+            if (bmp2 != null)
+            {
+                bmp2lv = new Bitmap(bmp2);
+                Utils.AdjustLevels(bmp2lv, trackBar1.Value);
+            }
             panel1.Refresh();
             panel2.Refresh();
-        }
-
-        private Bitmap MakeBitmap(Bitmap bmp)
-        {
-            if (bmp == null) return null;
-
-            int w = bmp.Width, h = bmp.Height;
-            var r = new Rectangle(0, 0, w, h);
-
-            var data1 = bmp.LockBits(r, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-            var buf = new byte[w * h * 3];
-            Marshal.Copy(data1.Scan0, buf, 0, buf.Length);
-            bmp.UnlockBits(data1);
-
-            if (trackBar1.Value > 0)
-            {
-                var lv = level[trackBar1.Value];
-                for (int i = 0; i < buf.Length; i++)
-                    buf[i] = lv[buf[i]];
-            }
-
-            var ret = new Bitmap(w, h);
-            var data2 = ret.LockBits(r, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-            Marshal.Copy(buf, 0, data2.Scan0, buf.Length);
-            ret.UnlockBits(data2);
-
-            return ret;
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -262,30 +222,16 @@ namespace JpegBookMaker
             if (!stop) ShowPage(listView1.FocusedItem);
         }
 
-        private void DrawImage(Control target, Graphics g, Image img)
+        private void DrawImage(Control target, Graphics g, Bitmap img)
         {
             if (img == null) return;
 
             var sz = target.ClientSize;
-            int w = sz.Width, h = sz.Height;
-            if (w < 1 || h < 1) return;
+            var bmp = Utils.ResizeImage(img, sz);
+            if (bmp == null) return;
 
-            int iw = img.Width, ih = img.Height;
-            int hh = ih * w / iw;
-            if (hh < h)
-            {
-                iw = w;
-                ih = hh;
-            }
-            else
-            {
-                iw = iw * h / ih;
-                ih = h;
-            }
-            var im = g.InterpolationMode;
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.DrawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
-            g.InterpolationMode = im;
+            g.DrawImage(bmp, (sz.Width - bmp.Width) / 2, (sz.Height - bmp.Height) / 2);
+            bmp.Dispose();
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -312,10 +258,10 @@ namespace JpegBookMaker
         {
             var sz = panel3.ClientSize;
             int w = sz.Width, h = sz.Height;
-            var lv = level[trackBar1.Value];
+            var lt = Utils.GetLevelsTable(trackBar1.Value);
             var pts = new PointF[w];
             for (int x = 0; x < w; x++)
-                pts[x] = new PointF(x, ((float)((255 - lv[x * 256 / w]) * h)) / 256);
+                pts[x] = new PointF(x, ((float)((255 - lt[x * 256 / w]) * h)) / 256);
             var sm = e.Graphics.SmoothingMode;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.DrawLines(SystemPens.WindowText, pts);
