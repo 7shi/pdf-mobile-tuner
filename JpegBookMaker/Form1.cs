@@ -272,11 +272,11 @@ namespace JpegBookMaker
             int w = sz.Width, h = sz.Height;
             var lt = Utils.GetLevelsTable(trackBar1.Value);
             var ct = Utils.GetContrastTable(trackBar2.Value * 16);
-            var pts = new PointF[w];
+            var pts = new PointF[256];
             for (int i = 0; i < 256; i++)
             {
                 var x = ((float)i) * w / 256;
-                pts[(int)x] = new PointF(x, ((float)((255 - lt[ct[i]]) * (h - 1))) / 255);
+                pts[i] = new PointF(x, ((float)((255 - lt[ct[i]]) * (h - 1))) / 255);
             }
             var sm = e.Graphics.SmoothingMode;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
