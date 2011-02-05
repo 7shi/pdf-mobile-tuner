@@ -19,7 +19,7 @@ namespace JpegBookMaker
             panel1.MouseWheel += pictureBox_MouseWheel;
             panel2.MouseWheel += pictureBox_MouseWheel;
 #if DEBUG
-            folderBrowserDialog1.SelectedPath = @"D:\pdf2jpg";
+            folderBrowserDialog1.SelectedPath = @"M:\";
 #endif
         }
 
@@ -252,6 +252,8 @@ namespace JpegBookMaker
         private void panel1_Resize(object sender, EventArgs e)
         {
             panel1.Invalidate();
+            var cs = panel1.ClientSize;
+            toolStripStatusLabel2.Text = cs.Width + "x" + cs.Height;
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
