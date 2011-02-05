@@ -116,12 +116,12 @@
             // 
             this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.trackBar2.Location = new System.Drawing.Point(0, 429);
-            this.trackBar2.Maximum = 7;
+            this.trackBar2.Maximum = 15;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(96, 45);
-            this.trackBar2.TabIndex = 5;
-            this.trackBar2.Value = 6;
+            this.trackBar2.TabIndex = 10;
+            this.trackBar2.Value = 12;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
             // checkBox1

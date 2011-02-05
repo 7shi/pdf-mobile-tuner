@@ -237,7 +237,7 @@ namespace JpegBookMaker
 
             if (checkBox1.Checked)
             {
-                Utils.AdjustContrast(bmp, trackBar2.Value * 32);
+                Utils.AdjustContrast(bmp, trackBar2.Value * 16);
                 Utils.GrayScale(bmp);
             }
             g.DrawImage(bmp, (sz.Width - bmp.Width) / 2, (sz.Height - bmp.Height) / 2);
@@ -271,7 +271,7 @@ namespace JpegBookMaker
             var sz = panel3.ClientSize;
             int w = sz.Width, h = sz.Height;
             var lt = Utils.GetLevelsTable(trackBar1.Value);
-            var ct = Utils.GetContrastTable(trackBar2.Value * 32);
+            var ct = Utils.GetContrastTable(trackBar2.Value * 16);
             var pts = new PointF[w];
             for (int i = 0; i < 256; i++)
             {
