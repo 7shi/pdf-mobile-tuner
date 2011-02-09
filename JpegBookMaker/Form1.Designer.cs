@@ -62,7 +62,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(147, 300);
+            this.listView1.Size = new System.Drawing.Size(131, 224);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.SmallIcon;
@@ -73,9 +73,9 @@
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 300);
+            this.panel3.Location = new System.Drawing.Point(0, 224);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(147, 84);
+            this.panel3.Size = new System.Drawing.Size(131, 84);
             this.panel3.TabIndex = 3;
             this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
             this.panel3.Resize += new System.EventHandler(this.panel3_Resize);
@@ -83,9 +83,9 @@
             // trackBar1
             // 
             this.trackBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar1.Location = new System.Drawing.Point(0, 384);
+            this.trackBar1.Location = new System.Drawing.Point(0, 308);
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(147, 45);
+            this.trackBar1.Size = new System.Drawing.Size(131, 45);
             this.trackBar1.TabIndex = 4;
             this.trackBar1.Value = 6;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
@@ -93,11 +93,11 @@
             // trackBar2
             // 
             this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar2.Location = new System.Drawing.Point(0, 429);
+            this.trackBar2.Location = new System.Drawing.Point(0, 353);
             this.trackBar2.Maximum = 15;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(147, 45);
+            this.trackBar2.Size = new System.Drawing.Size(131, 45);
             this.trackBar2.TabIndex = 10;
             this.trackBar2.Value = 12;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
@@ -108,10 +108,10 @@
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.checkBox1.Location = new System.Drawing.Point(0, 474);
+            this.checkBox1.Location = new System.Drawing.Point(0, 398);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Padding = new System.Windows.Forms.Padding(8, 0, 0, 0);
-            this.checkBox1.Size = new System.Drawing.Size(147, 16);
+            this.checkBox1.Size = new System.Drawing.Size(131, 16);
             this.checkBox1.TabIndex = 1;
             this.checkBox1.Text = "グレー";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -145,7 +145,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(751, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(552, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -183,9 +183,9 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 514);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 438);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(751, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(552, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -218,7 +218,7 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel4.Location = new System.Drawing.Point(0, 24);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(147, 490);
+            this.panel4.Size = new System.Drawing.Size(131, 414);
             this.panel4.TabIndex = 3;
             // 
             // panel5
@@ -226,17 +226,17 @@
             this.panel5.Controls.Add(this.panel2);
             this.panel5.Controls.Add(this.panel1);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(150, 24);
+            this.panel5.Location = new System.Drawing.Point(134, 24);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(601, 490);
+            this.panel5.Size = new System.Drawing.Size(418, 414);
             this.panel5.TabIndex = 4;
             this.panel5.Resize += new System.EventHandler(this.panel5_Resize);
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(147, 24);
+            this.splitter1.Location = new System.Drawing.Point(131, 24);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 490);
+            this.splitter1.Size = new System.Drawing.Size(3, 414);
             this.splitter1.TabIndex = 5;
             this.splitter1.TabStop = false;
             // 
@@ -244,7 +244,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(751, 536);
+            this.ClientSize = new System.Drawing.Size(552, 460);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel4);
@@ -252,6 +252,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
             this.Text = "JPEG Book Maker";
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
