@@ -76,14 +76,14 @@ namespace JpegBookMaker
             Close();
         }
 
-        private void splitContainer1_Panel2_Resize(object sender, EventArgs e)
+        private void panel5_Resize(object sender, EventArgs e)
         {
             AdjustPanel();
         }
 
         private void AdjustPanel()
         {
-            var sz = splitContainer1.Panel2.ClientSize;
+            var sz = panel5.ClientSize;
             int w = sz.Width / 2;
             panel1.Bounds = new Rectangle(0, 0, w, sz.Height);
             panel2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
