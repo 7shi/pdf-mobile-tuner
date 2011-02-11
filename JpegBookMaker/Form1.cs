@@ -32,12 +32,19 @@ namespace JpegBookMaker
             var bmpPath = folderBrowserDialog1.SelectedPath;
             toolStripStatusLabel1.Text = bmpPath;
             bookPanel1.Open(bmpPath);
+            rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
         }
 
         private void bookPanel1_Resize(object sender, EventArgs e)
         {
             var sz = bookPanel1.Panel1;
             toolStripStatusLabel2.Text = sz.Width + "x" + sz.Height;
+        }
+
+        private void rightBindingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var menu = rightBindingToolStripMenuItem;
+            bookPanel1.RightBinding = menu.Checked = !menu.Checked;
         }
     }
 }

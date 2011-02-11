@@ -13,6 +13,17 @@ namespace JpegBookMaker
 {
     public partial class BookPanel : UserControl
     {
+        private bool rightBinding;
+        public bool RightBinding
+        {
+            get { return rightBinding; }
+            set
+            {
+                rightBinding = value;
+                adjustPanel();
+            }
+        }
+
         public PicturePanel Panel1 { get { return panel1; } }
         public PicturePanel Panel2 { get { return panel2; } }
 
@@ -82,17 +93,17 @@ namespace JpegBookMaker
         {
             var sz = panel5.ClientSize;
             int w = sz.Width / 2;
-            panel1.Bounds = new Rectangle(0, 0, w, sz.Height);
-            panel2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
+            var p1 = !rightBinding ? panel1 : panel2;
+            var p2 = !rightBinding ? panel2 : panel1;
+            p1.Bounds = new Rectangle(0, 0, w, sz.Height);
+            p2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
         }
 
         private void ClearPanel()
         {
             if (panel1.Bitmap != null) panel1.Bitmap.Dispose();
             if (panel2.Bitmap != null) panel2.Bitmap.Dispose();
-            if (bmp1lv != null) bmp1lv.Dispose();
-            if (bmp2lv != null) bmp2lv.Dispose();
-            panel1.Bitmap = panel2.Bitmap = bmp1lv = bmp2lv = null;
+            panel1.Bitmap = panel2.Bitmap = null;
             bmp1fn = bmp2fn = null;
         }
 
@@ -102,6 +113,7 @@ namespace JpegBookMaker
         {
             this.bmpPath = bmpPath;
             ClearPanel();
+            RightBinding = false;
             stop = true;
             SetBitmap(null, null);
             lastFocused = null;
@@ -182,7 +194,6 @@ namespace JpegBookMaker
             stop = stp;
         }
 
-        Bitmap bmp1lv, bmp2lv;
         string bmpPath, bmp1fn, bmp2fn;
 
         private void SetBitmap(string path1, string path2)
