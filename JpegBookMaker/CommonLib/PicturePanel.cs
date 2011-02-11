@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using CommonLib;
 
-namespace JpegBookMaker
+namespace CommonLib
 {
     public class PicturePanel : UserControl
     {

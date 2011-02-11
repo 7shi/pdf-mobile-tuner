@@ -36,8 +36,8 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.panel2 = new JpegBookMaker.PicturePanel();
-            this.panel1 = new JpegBookMaker.PicturePanel();
+            this.panel2 = new CommonLib.PicturePanel();
+            this.panel1 = new CommonLib.PicturePanel();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -192,7 +192,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.Panel panel5;
-        private PicturePanel panel2;
-        private PicturePanel panel1;
+        private CommonLib.PicturePanel panel2;
+        private CommonLib.PicturePanel panel1;
     }
 }
