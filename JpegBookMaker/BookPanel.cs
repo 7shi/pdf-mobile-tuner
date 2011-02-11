@@ -306,5 +306,92 @@ namespace JpegBookMaker
         {
             panel1.Contrast = panel2.Contrast = checkBox1.Checked ? trackBar2.Value * 16 : 128;
         }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            contextMenuStrip1.Enabled = listView1.SelectedItems.Count > 0;
+            int count = listView1.Items.Count;
+            var sels = listView1.SelectedItems;
+            int min = count - 1, max = 0;
+            foreach (ListViewItem li in sels)
+            {
+                var idx = li.Index;
+                if (min > idx) min = idx;
+                if (max < idx) max = idx;
+            }
+            upToolStripMenuItem.Enabled = min > 0;
+            downToolStripMenuItem.Enabled = max < count - 1;
+        }
+
+        private void upToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sels = listView1.SelectedItems;
+            if (sels.Count == 0) return;
+
+            var fi = listView1.FocusedItem;
+            int min = sels[0].Index;
+            if (min < 1) return;
+
+            moveItems(sels, fi, min - 1);
+        }
+
+        private void downToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sels = listView1.SelectedItems;
+            if (sels.Count == 0) return;
+
+            var fi = listView1.FocusedItem;
+            int min = sels[0].Index;
+            int max = sels[sels.Count - 1].Index;
+            if (max >= listView1.Items.Count - 1) return;
+
+            moveItems(sels, fi, min + 1);
+        }
+
+        private void moveItems(ListView.SelectedListViewItemCollection sels, ListViewItem fi, int p)
+        {
+            stop = true;
+            listView1.BeginUpdate();
+            var list = new List<ListViewItem>();
+            foreach (ListViewItem li in listView1.Items)
+                list.Add(li);
+            foreach (ListViewItem li in sels)
+                list.Remove(li);
+            foreach (ListViewItem li in sels)
+                list.Insert(p++, li);
+            listView1.Items.Clear();
+            foreach (var li in list)
+                listView1.Items.Add(li);
+            listView1.FocusedItem = fi;
+            lastFocused = null;
+            ShowPage(fi);
+            listView1.EndUpdate();
+            stop = false;
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sels = listView1.SelectedItems;
+            if (sels.Count == 0) return;
+
+            int count = listView1.Items.Count;
+            int min = sels[0].Index;
+
+            stop = true;
+            listView1.BeginUpdate();
+            foreach (ListViewItem li in sels)
+                listView1.Items.Remove(li);
+            var fidx = Math.Min(min, listView1.Items.Count - 1);
+            if (fidx >= 0)
+            {
+                var fi = listView1.Items[fidx];
+                listView1.FocusedItem = fi;
+                ShowPage(fi);
+            }
+            else
+                ShowPage(null);
+            listView1.EndUpdate();
+            stop = false;
+        }
     }
 }
