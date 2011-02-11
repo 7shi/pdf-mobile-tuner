@@ -101,7 +101,7 @@
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(131, 45);
             this.trackBar2.TabIndex = 3;
-            this.trackBar2.Value = 12;
+            this.trackBar2.Value = 11;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
             // checkBox1
@@ -141,7 +141,11 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.panel2.Bitmap = null;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.Contrast = 128;
+            this.panel2.GrayScale = false;
+            this.panel2.Level = 0;
             this.panel2.Location = new System.Drawing.Point(92, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(86, 118);
@@ -150,7 +154,11 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.panel1.Bitmap = null;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Contrast = 128;
+            this.panel1.GrayScale = false;
+            this.panel1.Level = 0;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(86, 118);
