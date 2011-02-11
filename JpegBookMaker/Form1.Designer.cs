@@ -34,8 +34,8 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.bookPanel1 = new JpegBookMaker.BookPanel();
             this.menuStrip1.SuspendLayout();
@@ -84,18 +84,13 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2});
+            this.toolStripStatusLabel2,
+            this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 438);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(552, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
             // toolStripStatusLabel2
             // 
@@ -105,6 +100,13 @@
             this.toolStripStatusLabel2.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Size = new System.Drawing.Size(4, 17);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(533, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // folderBrowserDialog1
             // 
@@ -117,8 +119,8 @@
             this.bookPanel1.Location = new System.Drawing.Point(0, 24);
             this.bookPanel1.Name = "bookPanel1";
             this.bookPanel1.Size = new System.Drawing.Size(552, 414);
-            this.bookPanel1.TabIndex = 3;
-            this.bookPanel1.PanelSizeChanged += new System.Action<System.Drawing.Size>(this.bookPanel1_PanelSizeChanged);
+            this.bookPanel1.TabIndex = 0;
+            this.bookPanel1.Resize += new System.EventHandler(this.bookPanel1_Resize);
             // 
             // Form1
             // 

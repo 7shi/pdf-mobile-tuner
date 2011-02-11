@@ -34,9 +34,10 @@ namespace JpegBookMaker
             bookPanel1.Open(bmpPath);
         }
 
-        private void bookPanel1_PanelSizeChanged(Size size)
+        private void bookPanel1_Resize(object sender, EventArgs e)
         {
-            toolStripStatusLabel2.Text = size.Width + "x" + size.Height;
+            var sz = bookPanel1.Panel1;
+            toolStripStatusLabel2.Text = sz.Width + "x" + sz.Height;
         }
     }
 }

@@ -36,8 +36,8 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.panel2 = new PicturePanel();
-            this.panel1 = new PicturePanel();
+            this.panel2 = new JpegBookMaker.PicturePanel();
+            this.panel1 = new JpegBookMaker.PicturePanel();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -78,7 +78,7 @@
             this.panel3.Location = new System.Drawing.Point(0, 223);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(131, 84);
-            this.panel3.TabIndex = 3;
+            this.panel3.TabIndex = 1;
             this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
             this.panel3.Resize += new System.EventHandler(this.panel3_Resize);
             // 
@@ -88,7 +88,7 @@
             this.trackBar1.Location = new System.Drawing.Point(0, 307);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(131, 45);
-            this.trackBar1.TabIndex = 4;
+            this.trackBar1.TabIndex = 2;
             this.trackBar1.Value = 6;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
@@ -100,7 +100,7 @@
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(131, 45);
-            this.trackBar2.TabIndex = 10;
+            this.trackBar2.TabIndex = 3;
             this.trackBar2.Value = 12;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
@@ -114,7 +114,7 @@
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Padding = new System.Windows.Forms.Padding(8, 0, 0, 0);
             this.checkBox1.Size = new System.Drawing.Size(131, 16);
-            this.checkBox1.TabIndex = 1;
+            this.checkBox1.TabIndex = 4;
             this.checkBox1.Text = "グレー";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
@@ -135,7 +135,7 @@
             this.panel5.Location = new System.Drawing.Point(134, 0);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(417, 413);
-            this.panel5.TabIndex = 7;
+            this.panel5.TabIndex = 0;
             this.panel5.Resize += new System.EventHandler(this.panel5_Resize);
             // 
             // panel2
@@ -146,9 +146,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(86, 118);
             this.panel2.TabIndex = 1;
-            this.panel2.TabStop = true;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
-            this.panel2.Resize += new System.EventHandler(this.panel2_Resize);
             // 
             // panel1
             // 
@@ -158,9 +155,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(86, 118);
             this.panel1.TabIndex = 0;
-            this.panel1.TabStop = true;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
             // BookPanel
             // 

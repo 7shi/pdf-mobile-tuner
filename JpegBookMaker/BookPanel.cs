@@ -12,12 +12,14 @@ namespace JpegBookMaker
 {
     public partial class BookPanel : UserControl
     {
-        public event Action<Size> PanelSizeChanged;
+        public PicturePanel Panel1 { get { return panel1; } }
+        public PicturePanel Panel2 { get { return panel2; } }
 
         public BookPanel()
         {
             InitializeComponent();
-            AdjustPanel();
+            adjustPanel();
+            setState();
             panel1.MouseWheel += pictureBox_MouseWheel;
             panel2.MouseWheel += pictureBox_MouseWheel;
         }
@@ -57,7 +59,7 @@ namespace JpegBookMaker
                 fi.Selected = true;
                 stop = false;
             }
-            listView1.Focus();
+            //listView1.Focus();
         }
 
         private void ClearList(bool back, bool sel)
@@ -72,10 +74,10 @@ namespace JpegBookMaker
 
         private void panel5_Resize(object sender, EventArgs e)
         {
-            AdjustPanel();
+            adjustPanel();
         }
 
-        private void AdjustPanel()
+        private void adjustPanel()
         {
             var sz = panel5.ClientSize;
             int w = sz.Width / 2;
@@ -85,11 +87,11 @@ namespace JpegBookMaker
 
         private void ClearPanel()
         {
-            if (bmp1 != null) bmp1.Dispose();
-            if (bmp2 != null) bmp2.Dispose();
+            if (panel1.Bitmap != null) panel1.Bitmap.Dispose();
+            if (panel2.Bitmap != null) panel2.Bitmap.Dispose();
             if (bmp1lv != null) bmp1lv.Dispose();
             if (bmp2lv != null) bmp2lv.Dispose();
-            bmp1 = bmp2 = bmp1lv = bmp2lv = null;
+            panel1.Bitmap = panel2.Bitmap = bmp1lv = bmp2lv = null;
             bmp1fn = bmp2fn = null;
         }
 
@@ -167,7 +169,7 @@ namespace JpegBookMaker
             stop = stp;
         }
 
-        Bitmap bmp1, bmp2, bmp1lv, bmp2lv;
+        Bitmap bmp1lv, bmp2lv;
         string bmpPath, bmp1fn, bmp2fn;
 
         private void SetBitmap(string path1, string path2)
@@ -179,33 +181,17 @@ namespace JpegBookMaker
 
             bmp1fn = path1;
             bmp2fn = path2;
+            var bmp1 = panel1.Bitmap;
+            var bmp2 = panel2.Bitmap;
             if (bmp1 != null) bmp1.Dispose();
             if (bmp2 != null) bmp2.Dispose();
             bmp1 = bmp2 = null;
             if (path1 != null) bmp1 = new Bitmap(Path.Combine(bmpPath, path1));
             if (path2 != null) bmp2 = new Bitmap(Path.Combine(bmpPath, path2));
-            SetBitmap();
+            panel1.Bitmap = bmp1;
+            panel2.Bitmap = bmp2;
 
             Cursor.Current = cur;
-        }
-
-        private void SetBitmap()
-        {
-            if (bmp1lv != null) bmp1lv.Dispose();
-            if (bmp2lv != null) bmp2lv.Dispose();
-            bmp1lv = bmp2lv = null;
-            if (bmp1 != null)
-            {
-                bmp1lv = new Bitmap(bmp1);
-                Utils.AdjustLevels(bmp1lv, checkBox1.Checked ? trackBar1.Value : 5);
-            }
-            if (bmp2 != null)
-            {
-                bmp2lv = new Bitmap(bmp2);
-                Utils.AdjustLevels(bmp2lv, checkBox1.Checked ? trackBar1.Value : 5);
-            }
-            panel1.Refresh();
-            panel2.Refresh();
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -216,45 +202,6 @@ namespace JpegBookMaker
         private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (!stop) ShowPage(listView1.FocusedItem);
-        }
-
-        private void DrawImage(Control target, Graphics g, Bitmap img)
-        {
-            if (img == null) return;
-
-            var sz = target.ClientSize;
-            var bmp = Utils.ResizeImage(img, sz);
-            if (bmp == null) return;
-
-            if (checkBox1.Checked)
-            {
-                Utils.AdjustContrast(bmp, trackBar2.Value * 16);
-                Utils.GrayScale(bmp);
-            }
-            g.DrawImage(bmp, (sz.Width - bmp.Width) / 2, (sz.Height - bmp.Height) / 2);
-            bmp.Dispose();
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-            DrawImage(panel1, e.Graphics, bmp1lv);
-        }
-
-        private void panel1_Resize(object sender, EventArgs e)
-        {
-            panel1.Invalidate();
-            if (PanelSizeChanged != null)
-                PanelSizeChanged(panel1.ClientSize);
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-            DrawImage(panel2, e.Graphics, bmp2lv);
-        }
-
-        private void panel2_Resize(object sender, EventArgs e)
-        {
-            panel2.Invalidate();
         }
 
         private void panel3_Paint(object sender, PaintEventArgs e)
@@ -285,8 +232,10 @@ namespace JpegBookMaker
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
+            setLevel();
+            panel1.Refresh();
+            panel2.Refresh();
             panel3.Refresh();
-            SetBitmap();
 
             Cursor.Current = cur;
         }
@@ -296,6 +245,7 @@ namespace JpegBookMaker
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
+            setContrast();
             panel1.Refresh();
             panel2.Refresh();
             panel3.Refresh();
@@ -308,11 +258,29 @@ namespace JpegBookMaker
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
-            trackBar1.Enabled = trackBar2.Enabled = checkBox1.Checked;
+            setState();
             panel1.Refresh();
             panel2.Refresh();
 
             Cursor.Current = cur;
+        }
+
+        private void setState()
+        {
+            setLevel();
+            setContrast();
+            panel1.GrayScale = panel2.GrayScale = checkBox1.Checked;
+            trackBar1.Enabled = trackBar2.Enabled = checkBox1.Checked;
+        }
+
+        private void setLevel()
+        {
+            panel1.Level = panel2.Level = checkBox1.Checked ? trackBar1.Value : 5;
+        }
+
+        private void setContrast()
+        {
+            panel1.Contrast = panel2.Contrast = checkBox1.Checked ? trackBar2.Value * 16 : 128;
         }
     }
 }
