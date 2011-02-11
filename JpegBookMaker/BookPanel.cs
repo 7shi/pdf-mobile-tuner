@@ -44,34 +44,21 @@ namespace JpegBookMaker
             if (fi == null) return;
 
             int index = fi.Index, idx = index;
-            int count = listView1.Items.Count;
-            bool ok = true;
-            for (int i = 0; i < 2; )
-            {
-                if (e.Delta > 0) idx--; else idx++;
-                if (idx < 0 || idx >= count)
-                {
-                    if (i == 0) ok = false;
-                    break;
-                }
-                if (listView1.Items[index].Checked)
-                {
-                    index = idx;
-                    i++;
-                }
-            }
-            if (ok)
+            if (e.Delta > 0)
+                idx = Math.Max(idx - 2, 0);
+            else
+                idx = Math.Min(idx + 2, listView1.Items.Count - 1);
+            if (index != idx)
             {
                 stop = true;
-                fi = listView1.Items[index];
+                fi = listView1.Items[idx];
                 listView1.FocusedItem = fi;
-                listView1.EnsureVisible(index);
+                listView1.EnsureVisible(idx);
                 ShowPage(fi);
                 ClearList(false, true);
                 fi.Selected = true;
                 stop = false;
             }
-            //listView1.Focus();
         }
 
         private void ClearList(bool back, bool sel)
@@ -168,7 +155,6 @@ namespace JpegBookMaker
             ListViewItem li1 = null, li2 = null;
             foreach (ListViewItem li3 in listView1.Items)
             {
-                if (!li3.Checked) continue;
                 if (li1 == null)
                     li1 = li3;
                 else
@@ -328,11 +314,10 @@ namespace JpegBookMaker
             var sels = listView1.SelectedItems;
             if (sels.Count == 0) return;
 
-            var fi = listView1.FocusedItem;
             int min = sels[0].Index;
             if (min < 1) return;
 
-            moveItems(sels, fi, min - 1);
+            moveItems(min - 1);
         }
 
         private void downToolStripMenuItem_Click(object sender, EventArgs e)
@@ -340,16 +325,18 @@ namespace JpegBookMaker
             var sels = listView1.SelectedItems;
             if (sels.Count == 0) return;
 
-            var fi = listView1.FocusedItem;
             int min = sels[0].Index;
             int max = sels[sels.Count - 1].Index;
             if (max >= listView1.Items.Count - 1) return;
 
-            moveItems(sels, fi, min + 1);
+            moveItems(min + 1);
         }
 
-        private void moveItems(ListView.SelectedListViewItemCollection sels, ListViewItem fi, int p)
+        private void moveItems(int p)
         {
+            var sels = listView1.SelectedItems;
+            var fi = listView1.FocusedItem;
+
             stop = true;
             listView1.BeginUpdate();
             var list = new List<ListViewItem>();
