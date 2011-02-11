@@ -60,7 +60,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="CommonLib\Utils.cs" />
     <EmbeddedResource Include="BookPanel.resx">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </EmbeddedResource>
