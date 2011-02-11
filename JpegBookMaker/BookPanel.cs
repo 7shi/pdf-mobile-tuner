@@ -108,12 +108,24 @@ namespace JpegBookMaker
             listView1.Items.Clear();
             listView1.BeginUpdate();
             listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
-            var files = Directory.GetFiles(bmpPath, "*.jpg");
+            var files = new List<string>(Directory.GetFiles(bmpPath));
+            files.Sort(new NumberStringComparer());
             foreach (var file in files)
             {
-                var fn = Path.GetFileName(file);
-                var fn2 = Path.GetFileNameWithoutExtension(file);
-                listView1.Items.Add(new ListViewItem(fn2) { Tag = fn, Checked = true });
+                switch (Path.GetExtension(file).ToLower())
+                {
+                    case ".jpg":
+                    case ".jpeg":
+                    case ".png":
+                    case ".gif":
+                    case ".bmp":
+                    case ".tif":
+                    case ".tiff":
+                        var fn = Path.GetFileName(file);
+                        var fn2 = Path.GetFileNameWithoutExtension(file);
+                        listView1.Items.Add(new ListViewItem(fn2) { Tag = fn, Checked = true });
+                        break;
+                }
             }
             listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
             listView1.EndUpdate();
