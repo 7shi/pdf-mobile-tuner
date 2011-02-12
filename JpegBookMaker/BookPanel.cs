@@ -23,8 +23,10 @@ namespace JpegBookMaker
                 rightBinding = value;
                 adjustPanel();
                 var r = panel1.BoxBounds;
+                ignore = true;
                 panel1.BoxBounds = panel2.BoxBounds;
                 panel2.BoxBounds = r;
+                ignore = false;
             }
         }
 
@@ -154,8 +156,10 @@ namespace JpegBookMaker
             int w = bmp.Width, h = bmp.Height;
             int bx = w / 40, by = h / 40, bw = w - bx * 3, bh = h - by * 2;
             BoxSize = new Size(bw, bh);
+            ignore = true;
             panel1.BoxBounds = new Rectangle(bx, by, bw, bh);
             panel2.BoxBounds = new Rectangle(bx * 2, by, bw, bh);
+            ignore = false;
         }
 
         private ListViewItem lastFocused;
@@ -435,6 +439,40 @@ namespace JpegBookMaker
                 if (BoxResize != null)
                     BoxResize(this, EventArgs.Empty);
             }
+        }
+
+        private bool ignore;
+
+        private void panel1_BoxResize(object sender, EventArgs e)
+        {
+            if (ignore) return;
+            var st = panel1.State;
+            var b1 = panel1.BoxBounds;
+            var b2 = panel2.BoxBounds;
+            if (st == 2 || st == 5 || st == 8) b2.X += b2.Width - b1.Width;
+            b2.Y = b1.Y;
+            b2.Size = b1.Size;
+            ignore = true;
+            panel2.BoxBounds = b2;
+            ignore = false;
+            panel1.Refresh();
+            panel2.Refresh();
+        }
+
+        private void panel2_BoxResize(object sender, EventArgs e)
+        {
+            if (ignore) return;
+            var st = panel2.State;
+            var b1 = panel1.BoxBounds;
+            var b2 = panel2.BoxBounds;
+            if (st == 2 || st == 5 || st == 8) b1.X += b1.Width - b2.Width;
+            b1.Y = b2.Y;
+            b1.Size = b2.Size;
+            ignore = true;
+            panel1.BoxBounds = b1;
+            ignore = false;
+            panel1.Refresh();
+            panel2.Refresh();
         }
     }
 }

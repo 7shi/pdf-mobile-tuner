@@ -60,14 +60,18 @@ namespace CommonLib
             }
         }
 
+        public event EventHandler BoxResize;
+
         private Rectangle boxBounds;
         public Rectangle BoxBounds
         {
             get { return boxBounds; }
             set
             {
+                if (boxBounds == value) return;
                 boxBounds = value;
                 Invalidate();
+                if (BoxResize != null) BoxResize(this, EventArgs.Empty);
             }
         }
 
