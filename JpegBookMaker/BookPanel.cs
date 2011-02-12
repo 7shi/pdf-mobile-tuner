@@ -128,7 +128,6 @@ namespace JpegBookMaker
                         break;
                 }
             }
-            listView1.Items.Add(new ListViewItem("(空)"));
             listView1.EndUpdate();
             if (listView1.Items.Count > 0)
             {
