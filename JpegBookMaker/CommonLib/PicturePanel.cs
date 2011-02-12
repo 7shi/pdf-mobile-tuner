@@ -114,7 +114,11 @@ namespace CommonLib
 
             Utils.AdjustContrast(cache, contrast);
             if (grayScale) Utils.GrayScale(cache);
+        }
 
+        private void setBox()
+        {
+            var sz = ClientSize;
             cx = (sz.Width - cache.Width) / 2;
             cy = (sz.Height - cache.Height) / 2;
             bx = cx + boxBounds.X * cache.Width / bitmap.Width;
@@ -128,6 +132,7 @@ namespace CommonLib
             if (cache == null) setCache();
             if (cache != null)
             {
+                setBox();
                 e.Graphics.DrawImage(cache, cx, cy);
                 if (!boxBounds.Size.IsEmpty)
                     using (var pen = new Pen(Color.Red, 2))
@@ -145,34 +150,32 @@ namespace CommonLib
 
         public int State { get; private set; }
 
-        protected override void OnMouseMove(MouseEventArgs e)
+        private void setCursor(int x, int y)
         {
-            base.OnMouseMove(e);
-
             State = 0;
             var cur = Cursors.Default;
             if (!boxBounds.Size.IsEmpty && cache != null)
             {
                 const int th = 3;
                 int bx2 = bx + bw, by2 = by + bh;
-                if (bx - th <= e.X && e.X <= bx2 + th && by - th <= e.Y && e.Y <= by2 + th)
+                if (bx - th <= x && x <= bx2 + th && by - th <= y && y <= by2 + th)
                 {
-                    if (bx - th <= e.X && e.X <= bx + th)
+                    if (bx - th <= x && x <= bx + th)
                     {
                         State = 1;
                         cur = Cursors.SizeWE;
                     }
-                    else if (bx2 - th <= e.X && e.X <= bx2 + th)
+                    else if (bx2 - th <= x && x <= bx2 + th)
                     {
                         State = 2;
                         cur = Cursors.SizeWE;
                     }
-                    else if (by - th <= e.Y && e.Y <= by + th)
+                    else if (by - th <= y && y <= by + th)
                     {
                         State = 3;
                         cur = Cursors.SizeNS;
                     }
-                    else if (by2 - th <= e.Y && e.Y <= by2 + th)
+                    else if (by2 - th <= y && y <= by2 + th)
                     {
                         State = 4;
                         cur = Cursors.SizeNS;
@@ -180,6 +183,85 @@ namespace CommonLib
                 }
             }
             if (Cursor != cur) Cursor = cur;
+        }
+
+        public Point ClickLocation { get; private set; }
+        public Rectangle LastBoxBounds { get; private set; }
+
+        private bool isDragging;
+        public bool IsDragging
+        {
+            get { return isDragging; }
+            set
+            {
+                if (isDragging == value) return;
+                isDragging = value;
+                Capture = value;
+            }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (e.Button == MouseButtons.Left && State != 0)
+            {
+                IsDragging = true;
+                ClickLocation = e.Location;
+                LastBoxBounds = boxBounds;
+            }
+            else if (e.Button == MouseButtons.Right && IsDragging)
+            {
+                IsDragging = false;
+                BoxBounds = LastBoxBounds;
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (IsDragging)
+            {
+                int dx = (e.X - ClickLocation.X) * bitmap.Width / cache.Width;
+                int dy = (e.Y - ClickLocation.Y) * bitmap.Height / cache.Height;
+                var b = LastBoxBounds;
+                switch (State)
+                {
+                    case 1:
+                        b.X += dx;
+                        b.Width -= dx;
+                        break;
+                    case 2:
+                        b.Width += dx;
+                        break;
+                    case 3:
+                        b.Y += dy;
+                        b.Height -= dy;
+                        break;
+                    case 4:
+                        b.Height += dy;
+                        break;
+                }
+                BoxBounds = b;
+            }
+            else
+                setCursor(e.X, e.Y);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (e.Button == MouseButtons.Left && IsDragging)
+                IsDragging = false;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.KeyCode == Keys.Escape && IsDragging)
+            {
+                IsDragging = false;
+                BoxBounds = LastBoxBounds;
+            }
         }
     }
 }
