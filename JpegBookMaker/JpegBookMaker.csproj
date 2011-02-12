@@ -49,6 +49,7 @@
     <Compile Include="BookPanel.Designer.cs">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="CommonLib\MouseWheelMessageFilter.cs" />
     <Compile Include="CommonLib\NumberStringComparer.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
