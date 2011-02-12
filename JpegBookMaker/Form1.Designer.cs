@@ -33,13 +33,15 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rightBindingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rightBindingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bookPanel1 = new JpegBookMaker.BookPanel();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -48,6 +50,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.viewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -68,21 +71,36 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.openToolStripMenuItem.Text = "開く(&O)";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(106, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.exitToolStripMenuItem.Text = "終了(&X)";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rightBindingToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.viewToolStripMenuItem.Text = "表示(&V)";
+            // 
+            // rightBindingToolStripMenuItem
+            // 
+            this.rightBindingToolStripMenuItem.Name = "rightBindingToolStripMenuItem";
+            this.rightBindingToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.rightBindingToolStripMenuItem.Text = "右綴じ(&R)";
+            this.rightBindingToolStripMenuItem.Click += new System.EventHandler(this.rightBindingToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -116,21 +134,6 @@
             this.folderBrowserDialog1.Description = "JPEGフォルダを選択してください。";
             this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rightBindingToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
-            this.viewToolStripMenuItem.Text = "表示(&V)";
-            // 
-            // rightBindingToolStripMenuItem
-            // 
-            this.rightBindingToolStripMenuItem.Name = "rightBindingToolStripMenuItem";
-            this.rightBindingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.rightBindingToolStripMenuItem.Text = "右綴じ(&R)";
-            this.rightBindingToolStripMenuItem.Click += new System.EventHandler(this.rightBindingToolStripMenuItem_Click);
-            // 
             // bookPanel1
             // 
             this.bookPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -140,6 +143,22 @@
             this.bookPanel1.Size = new System.Drawing.Size(552, 414);
             this.bookPanel1.TabIndex = 0;
             this.bookPanel1.Resize += new System.EventHandler(this.bookPanel1_Resize);
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectAllToolStripMenuItem});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.editToolStripMenuItem.Text = "編集(&E)";
+            // 
+            // selectAllToolStripMenuItem
+            // 
+            this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+            this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.selectAllToolStripMenuItem.Text = "すべて選択(&A)";
+            this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -176,6 +195,8 @@
         private BookPanel bookPanel1;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rightBindingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
     }
 }
 

@@ -59,6 +59,7 @@ namespace JpegBookMaker
                 fi.Selected = true;
                 stop = false;
             }
+            listView1.Focus();
         }
 
         private void ClearList(bool back, bool sel)
@@ -386,6 +387,18 @@ namespace JpegBookMaker
             }
             else
                 ShowPage(null);
+            listView1.EndUpdate();
+            stop = false;
+        }
+
+        public void SelectAll()
+        {
+            stop = true;
+            listView1.BeginUpdate();
+            foreach (ListViewItem li in listView1.Items)
+            {
+                if (!li.Selected) li.Selected = true;
+            }
             listView1.EndUpdate();
             stop = false;
         }

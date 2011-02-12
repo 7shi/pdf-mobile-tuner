@@ -46,5 +46,10 @@ namespace JpegBookMaker
             var menu = rightBindingToolStripMenuItem;
             bookPanel1.RightBinding = menu.Checked = !menu.Checked;
         }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bookPanel1.SelectAll();
+        }
     }
 }
