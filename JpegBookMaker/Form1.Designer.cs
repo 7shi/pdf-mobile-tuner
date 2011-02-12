@@ -39,9 +39,9 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.bookPanel1 = new JpegBookMaker.BookPanel();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bookPanel1 = new JpegBookMaker.BookPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -134,16 +134,6 @@
             this.folderBrowserDialog1.Description = "JPEGフォルダを選択してください。";
             this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
-            // bookPanel1
-            // 
-            this.bookPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bookPanel1.Location = new System.Drawing.Point(0, 24);
-            this.bookPanel1.Name = "bookPanel1";
-            this.bookPanel1.RightBinding = false;
-            this.bookPanel1.Size = new System.Drawing.Size(552, 414);
-            this.bookPanel1.TabIndex = 0;
-            this.bookPanel1.Resize += new System.EventHandler(this.bookPanel1_Resize);
-            // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -159,6 +149,18 @@
             this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.selectAllToolStripMenuItem.Text = "すべて選択(&A)";
             this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+            // 
+            // bookPanel1
+            // 
+            this.bookPanel1.BoxSize = new System.Drawing.Size(0, 0);
+            this.bookPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bookPanel1.Location = new System.Drawing.Point(0, 24);
+            this.bookPanel1.Name = "bookPanel1";
+            this.bookPanel1.RightBinding = false;
+            this.bookPanel1.Size = new System.Drawing.Size(552, 414);
+            this.bookPanel1.TabIndex = 0;
+            this.bookPanel1.BoxResize += new System.EventHandler(this.bookPanel1_BoxResize);
+            this.bookPanel1.Resize += new System.EventHandler(this.bookPanel1_Resize);
             // 
             // Form1
             // 

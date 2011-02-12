@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using CommonLib;
 
 namespace JpegBookMaker
 {
@@ -37,8 +38,12 @@ namespace JpegBookMaker
 
         private void bookPanel1_Resize(object sender, EventArgs e)
         {
-            var sz = bookPanel1.Panel1;
-            toolStripStatusLabel2.Text = sz.Width + "x" + sz.Height;
+            setStatusLabel();
+        }
+
+        private void bookPanel1_BoxResize(object sender, EventArgs e)
+        {
+            setStatusLabel();
         }
 
         private void rightBindingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -50,6 +55,23 @@ namespace JpegBookMaker
         private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bookPanel1.SelectAll();
+        }
+
+        private void setStatusLabel()
+        {
+            var bmp = bookPanel1.Panel1.Bitmap;
+            if (bmp == null)
+                bmp = bookPanel1.Panel2.Bitmap;
+            if (bmp == null)
+            {
+                toolStripStatusLabel2.Text = "";
+                return;
+            }
+            var bsz = bookPanel1.BoxSize;
+            var sz2 = Utils.GetSize(bmp.Size, bookPanel1.Panel1.ClientSize);
+            var w = bsz.Width * sz2.Width / bmp.Width;
+            var h = bsz.Height * sz2.Height / bmp.Height;
+            toolStripStatusLabel2.Text = w + "x" + h;
         }
     }
 }

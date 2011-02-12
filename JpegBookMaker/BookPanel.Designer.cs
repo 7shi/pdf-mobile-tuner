@@ -196,6 +196,7 @@
             this.panel2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel2.Bitmap = null;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel2.BoxBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.panel2.Contrast = 128;
             this.panel2.GrayScale = false;
             this.panel2.Level = 0;
@@ -203,12 +204,14 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(86, 118);
             this.panel2.TabIndex = 1;
+            this.panel2.BoxBoundsChanged += new System.EventHandler(this.panel2_BoxBoundsChanged);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel1.Bitmap = null;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.BoxBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.panel1.Contrast = 128;
             this.panel1.GrayScale = false;
             this.panel1.Level = 0;
@@ -216,6 +219,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(86, 118);
             this.panel1.TabIndex = 0;
+            this.panel1.BoxBoundsChanged += new System.EventHandler(this.panel1_BoxBoundsChanged);
             // 
             // BookPanel
             // 

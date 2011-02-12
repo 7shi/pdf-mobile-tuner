@@ -60,6 +60,21 @@ namespace CommonLib
             }
         }
 
+        public event EventHandler BoxBoundsChanged;
+
+        private Rectangle boxBounds;
+        public Rectangle BoxBounds
+        {
+            get { return boxBounds; }
+            set
+            {
+                boxBounds = value;
+                Invalidate();
+                if (BoxBoundsChanged != null)
+                    BoxBoundsChanged(this, EventArgs.Empty);
+            }
+        }
+
         public PicturePanel()
         {
             SetStyle(ControlStyles.Selectable, true);
@@ -105,15 +120,24 @@ namespace CommonLib
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
             if (cache == null) setCache();
             if (cache != null)
             {
                 var sz = ClientSize;
-                e.Graphics.DrawImage(cache,
-                    (sz.Width - cache.Width) / 2,
-                    (sz.Height - cache.Height) / 2);
+                var x = (sz.Width - cache.Width) / 2;
+                var y = (sz.Height - cache.Height) / 2;
+                e.Graphics.DrawImage(cache, x, y);
+                if (!boxBounds.Size.IsEmpty)
+                {
+                    var bx = boxBounds.X * cache.Width / bitmap.Width;
+                    var by = boxBounds.Y * cache.Height / bitmap.Height;
+                    var bw = boxBounds.Width * cache.Width / bitmap.Width;
+                    var bh = boxBounds.Height * cache.Height / bitmap.Height;
+                    using (var pen = new Pen(Color.Red, 2))
+                        e.Graphics.DrawRectangle(pen, x + bx, y + by, bw, bh);
+                }
             }
+            base.OnPaint(e);
         }
 
         protected override void OnResize(EventArgs e)

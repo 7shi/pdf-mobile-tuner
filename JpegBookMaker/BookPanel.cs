@@ -19,8 +19,12 @@ namespace JpegBookMaker
             get { return rightBinding; }
             set
             {
+                if (rightBinding == value) return;
                 rightBinding = value;
                 adjustPanel();
+                var r = panel1.BoxBounds;
+                panel1.BoxBounds = panel2.BoxBounds;
+                panel2.BoxBounds = r;
             }
         }
 
@@ -135,7 +139,22 @@ namespace JpegBookMaker
                 listView1.FocusedItem = fi;
                 ShowPage(fi);
             }
+            setBoxes();
             stop = false;
+        }
+
+        private void setBoxes()
+        {
+            var bmp = panel2.Bitmap;
+            if (bmp == null)
+            {
+                panel1.BoxBounds = panel2.BoxBounds = Rectangle.Empty;
+                return;
+            }
+            int w = bmp.Width, h = bmp.Height;
+            int bx = w / 40, by = h / 40;
+            panel1.BoxBounds = new Rectangle(bx, by, w - bx * 3, h - by * 2);
+            panel2.BoxBounds = new Rectangle(bx * 2, by, w - bx * 3, h - by * 2);
         }
 
         private ListViewItem lastFocused;
@@ -400,6 +419,31 @@ namespace JpegBookMaker
             }
             listView1.EndUpdate();
             stop = false;
+        }
+
+        public event EventHandler BoxResize;
+
+        private Size boxSize;
+        public Size BoxSize
+        {
+            get { return boxSize; }
+            set
+            {
+                if (boxSize == value) return;
+                boxSize = value;
+                if (BoxResize != null)
+                    BoxResize(this, EventArgs.Empty);
+            }
+        }
+
+        private void panel1_BoxBoundsChanged(object sender, EventArgs e)
+        {
+            BoxSize = panel1.BoxBounds.Size;
+        }
+
+        private void panel2_BoxBoundsChanged(object sender, EventArgs e)
+        {
+            BoxSize = panel2.BoxBounds.Size;
         }
     }
 }

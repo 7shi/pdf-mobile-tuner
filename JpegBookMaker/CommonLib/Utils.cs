@@ -113,12 +113,12 @@ namespace CommonLib
             bmp.UnlockBits(data);
         }
 
-        public static Bitmap ResizeImage(Bitmap img, Size sz)
+        public static Size GetSize(Size source, Size border)
         {
-            int w = sz.Width, h = sz.Height;
-            if (w < 1 || h < 1) return null;
+            int w = border.Width, h = border.Height;
+            if (w < 1 || h < 1) return Size.Empty;
 
-            int iw = img.Width, ih = img.Height;
+            int iw = source.Width, ih = source.Height;
             int hh = ih * w / iw;
             if (hh < h)
             {
@@ -130,12 +130,19 @@ namespace CommonLib
                 iw = iw * h / ih;
                 ih = h;
             }
+            return new Size(iw, ih);
+        }
 
-            var ret = new Bitmap(iw, ih);
+        public static Bitmap ResizeImage(Bitmap img, Size sz)
+        {
+            var sz2 = GetSize(img.Size, sz);
+            if (sz2.IsEmpty) return null;
+
+            var ret = new Bitmap(sz2.Width, sz2.Height);
             using (var g = Graphics.FromImage(ret))
             {
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(img, 0, 0, iw, ih);
+                g.DrawImage(img, 0, 0, sz2.Width, sz2.Height);
             }
             return ret;
         }
