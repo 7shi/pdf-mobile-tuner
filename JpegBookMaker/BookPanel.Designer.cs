@@ -29,13 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.leftPanel = new System.Windows.Forms.Panel();
             this.listView1 = new System.Windows.Forms.ListView();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.splitter1 = new System.Windows.Forms.Splitter();
-            this.panel5 = new System.Windows.Forms.Panel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.upToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,26 +38,31 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.curvePanel = new System.Windows.Forms.Panel();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.rightPanel = new System.Windows.Forms.Panel();
             this.panel2 = new CommonLib.PicturePanel();
             this.panel1 = new CommonLib.PicturePanel();
-            this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
-            this.panel5.SuspendLayout();
+            this.leftPanel.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            this.rightPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel4
+            // leftPanel
             // 
-            this.panel4.Controls.Add(this.listView1);
-            this.panel4.Controls.Add(this.tabControl1);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(131, 413);
-            this.panel4.TabIndex = 4;
+            this.leftPanel.Controls.Add(this.listView1);
+            this.leftPanel.Controls.Add(this.tabControl1);
+            this.leftPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.leftPanel.Location = new System.Drawing.Point(0, 0);
+            this.leftPanel.Name = "leftPanel";
+            this.leftPanel.Size = new System.Drawing.Size(131, 413);
+            this.leftPanel.TabIndex = 0;
             // 
             // listView1
             // 
@@ -78,58 +78,6 @@
             this.listView1.View = System.Windows.Forms.View.SmallIcon;
             this.listView1.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView1_ItemChecked);
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            // 
-            // panel3
-            // 
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 3);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(117, 84);
-            this.panel3.TabIndex = 1;
-            this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
-            this.panel3.Resize += new System.EventHandler(this.panel3_Resize);
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar1.Location = new System.Drawing.Point(3, 87);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(117, 45);
-            this.trackBar1.TabIndex = 2;
-            this.trackBar1.Value = 6;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar2.Location = new System.Drawing.Point(3, 132);
-            this.trackBar2.Maximum = 15;
-            this.trackBar2.Minimum = 1;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(117, 45);
-            this.trackBar2.TabIndex = 3;
-            this.trackBar2.Value = 11;
-            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
-            // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(131, 0);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 413);
-            this.splitter1.TabIndex = 6;
-            this.splitter1.TabStop = false;
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.panel2);
-            this.panel5.Controls.Add(this.panel1);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(134, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(417, 413);
-            this.panel5.TabIndex = 0;
-            this.panel5.Resize += new System.EventHandler(this.panel5_Resize);
             // 
             // contextMenuStrip1
             // 
@@ -176,12 +124,12 @@
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(131, 205);
-            this.tabControl1.TabIndex = 0;
+            this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.panel3);
+            this.tabPage1.Controls.Add(this.curvePanel);
             this.tabPage1.Controls.Add(this.trackBar1);
             this.tabPage1.Controls.Add(this.trackBar2);
             this.tabPage1.Location = new System.Drawing.Point(4, 21);
@@ -190,6 +138,58 @@
             this.tabPage1.Size = new System.Drawing.Size(123, 180);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "グレー";
+            // 
+            // curvePanel
+            // 
+            this.curvePanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.curvePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.curvePanel.Location = new System.Drawing.Point(3, 3);
+            this.curvePanel.Name = "curvePanel";
+            this.curvePanel.Size = new System.Drawing.Size(117, 84);
+            this.curvePanel.TabIndex = 0;
+            this.curvePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
+            this.curvePanel.Resize += new System.EventHandler(this.panel3_Resize);
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.trackBar1.Location = new System.Drawing.Point(3, 87);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(117, 45);
+            this.trackBar1.TabIndex = 1;
+            this.trackBar1.Value = 6;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.trackBar2.Location = new System.Drawing.Point(3, 132);
+            this.trackBar2.Maximum = 15;
+            this.trackBar2.Minimum = 1;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(117, 45);
+            this.trackBar2.TabIndex = 2;
+            this.trackBar2.Value = 11;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
+            // splitter1
+            // 
+            this.splitter1.Location = new System.Drawing.Point(131, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 413);
+            this.splitter1.TabIndex = 1;
+            this.splitter1.TabStop = false;
+            // 
+            // rightPanel
+            // 
+            this.rightPanel.Controls.Add(this.panel2);
+            this.rightPanel.Controls.Add(this.panel1);
+            this.rightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rightPanel.Location = new System.Drawing.Point(134, 0);
+            this.rightPanel.Name = "rightPanel";
+            this.rightPanel.Size = new System.Drawing.Size(417, 413);
+            this.rightPanel.TabIndex = 2;
+            this.rightPanel.Resize += new System.EventHandler(this.panel5_Resize);
             // 
             // panel2
             // 
@@ -221,32 +221,32 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel5);
+            this.Controls.Add(this.rightPanel);
             this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.leftPanel);
             this.Name = "BookPanel";
             this.Size = new System.Drawing.Size(551, 413);
-            this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            this.panel5.ResumeLayout(false);
+            this.leftPanel.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            this.rightPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel leftPanel;
         private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel curvePanel;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel rightPanel;
         private CommonLib.PicturePanel panel2;
         private CommonLib.PicturePanel panel1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

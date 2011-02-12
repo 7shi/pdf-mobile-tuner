@@ -79,7 +79,7 @@ namespace JpegBookMaker
 
         private void adjustPanel()
         {
-            var sz = panel5.ClientSize;
+            var sz = rightPanel.ClientSize;
             int w = sz.Width / 2;
             var p1 = !rightBinding ? panel1 : panel2;
             var p2 = !rightBinding ? panel2 : panel1;
@@ -218,7 +218,7 @@ namespace JpegBookMaker
 
         private void panel3_Paint(object sender, PaintEventArgs e)
         {
-            var sz = panel3.ClientSize;
+            var sz = curvePanel.ClientSize;
             int w = sz.Width, h = sz.Height;
             var lt = Utils.GetLevelsTable(trackBar1.Value);
             var ct = Utils.GetContrastTable(trackBar2.Value * 16);
@@ -236,7 +236,7 @@ namespace JpegBookMaker
 
         private void panel3_Resize(object sender, EventArgs e)
         {
-            panel3.Invalidate();
+            curvePanel.Invalidate();
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
@@ -247,7 +247,7 @@ namespace JpegBookMaker
             setLevel();
             panel1.Refresh();
             panel2.Refresh();
-            panel3.Refresh();
+            curvePanel.Refresh();
 
             Cursor.Current = cur;
         }
@@ -260,7 +260,7 @@ namespace JpegBookMaker
             setContrast();
             panel1.Refresh();
             panel2.Refresh();
-            panel3.Refresh();
+            curvePanel.Refresh();
 
             Cursor.Current = cur;
         }
