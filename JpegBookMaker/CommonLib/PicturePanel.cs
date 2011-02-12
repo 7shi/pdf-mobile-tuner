@@ -26,6 +26,7 @@ namespace CommonLib
             get { return level; }
             set
             {
+                if (level == value) return;
                 level = value;
                 setBitmap();
             }
@@ -37,6 +38,7 @@ namespace CommonLib
             get { return contrast; }
             set
             {
+                if (contrast == value) return;
                 contrast = value;
                 if (cache != null) cache.Dispose();
                 cache = null;
@@ -50,6 +52,7 @@ namespace CommonLib
             get { return grayScale; }
             set
             {
+                if (grayScale == value) return;
                 grayScale = value;
                 if (cache != null) cache.Dispose();
                 cache = null;

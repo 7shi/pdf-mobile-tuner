@@ -91,10 +91,11 @@ namespace JpegBookMaker
             if (panel1.Bitmap != null) panel1.Bitmap.Dispose();
             if (panel2.Bitmap != null) panel2.Bitmap.Dispose();
             panel1.Bitmap = panel2.Bitmap = null;
-            bmp1fn = bmp2fn = null;
+            panel1.Tag = panel2.Tag = null;
         }
 
-        bool stop = false;
+        private bool stop = false;
+        private string bmpPath;
 
         public void Open(string bmpPath)
         {
@@ -106,7 +107,7 @@ namespace JpegBookMaker
             lastFocused = null;
             listView1.Items.Clear();
             listView1.BeginUpdate();
-            listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
+            listView1.Items.Add(new ListViewItem("(空)"));
             var files = new List<string>(Directory.GetFiles(bmpPath));
             files.Sort(new NumberStringComparer());
             foreach (var file in files)
@@ -122,11 +123,11 @@ namespace JpegBookMaker
                     case ".tiff":
                         var fn = Path.GetFileName(file);
                         var fn2 = Path.GetFileNameWithoutExtension(file);
-                        listView1.Items.Add(new ListViewItem(fn2) { Tag = fn, Checked = true });
+                        listView1.Items.Add(new ListViewItem(fn2) { Tag = fn });
                         break;
                 }
             }
-            listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
+            listView1.Items.Add(new ListViewItem("(空)"));
             listView1.EndUpdate();
             if (listView1.Items.Count > 0)
             {
@@ -137,7 +138,7 @@ namespace JpegBookMaker
             stop = false;
         }
 
-        ListViewItem lastFocused;
+        private ListViewItem lastFocused;
 
         private void ShowPage(ListViewItem li)
         {
@@ -164,42 +165,36 @@ namespace JpegBookMaker
                     li1 = li2 = null;
                 }
             }
-            string path1 = null, path2 = null;
             ClearList(true, false);
             if (li1 != null)
-            {
                 li1.BackColor = SystemColors.ControlLight;
-                path1 = li1.Tag as string;
-            }
             if (li2 != null)
-            {
                 li2.BackColor = SystemColors.ControlLight;
-                path2 = li2.Tag as string;
-            }
-            SetBitmap(path1, path2);
+            SetBitmap(li1, li2);
             stop = stp;
         }
 
-        string bmpPath, bmp1fn, bmp2fn;
-
-        private void SetBitmap(string path1, string path2)
+        private void SetBitmap(ListViewItem li1, ListViewItem li2)
         {
-            if (bmp1fn == path1 && bmp2fn == path2) return;
+            if (panel1.Tag == li1 && panel2.Tag == li2) return;
 
             var cur = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
 
-            bmp1fn = path1;
-            bmp2fn = path2;
+            panel1.Tag = li1;
+            panel2.Tag = li2;
             var bmp1 = panel1.Bitmap;
             var bmp2 = panel2.Bitmap;
             if (bmp1 != null) bmp1.Dispose();
             if (bmp2 != null) bmp2.Dispose();
             bmp1 = bmp2 = null;
-            if (path1 != null) bmp1 = new Bitmap(Path.Combine(bmpPath, path1));
-            if (path2 != null) bmp2 = new Bitmap(Path.Combine(bmpPath, path2));
+            if (li1 != null && li1.Tag is string)
+                bmp1 = new Bitmap(Path.Combine(bmpPath, li1.Tag as string));
+            if (li2 != null && li2.Tag is string)
+                bmp2 = new Bitmap(Path.Combine(bmpPath, li2.Tag as string));
             panel1.Bitmap = bmp1;
             panel2.Bitmap = bmp2;
+            setState();
 
             Cursor.Current = cur;
         }
@@ -211,7 +206,13 @@ namespace JpegBookMaker
 
         private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (!stop) ShowPage(listView1.FocusedItem);
+            if (stop) return;
+            if (e.Item == panel1.Tag || e.Item == panel2.Tag)
+            {
+                setState();
+                panel1.Refresh();
+                panel2.Refresh();
+            }
         }
 
         private void panel3_Paint(object sender, PaintEventArgs e)
@@ -279,18 +280,26 @@ namespace JpegBookMaker
         {
             setLevel();
             setContrast();
-            panel1.GrayScale = panel2.GrayScale = checkBox1.Checked;
-            trackBar1.Enabled = trackBar2.Enabled = checkBox1.Checked;
+            var li1 = panel1.Tag as ListViewItem;
+            var li2 = panel2.Tag as ListViewItem;
+            if (li1 != null) panel1.GrayScale = li1.Checked;
+            if (li2 != null) panel2.GrayScale = li2.Checked;
         }
 
         private void setLevel()
         {
-            panel1.Level = panel2.Level = checkBox1.Checked ? trackBar1.Value : 5;
+            var li1 = panel1.Tag as ListViewItem;
+            var li2 = panel2.Tag as ListViewItem;
+            if (li1 != null) panel1.Level = li1.Checked ? trackBar1.Value : 5;
+            if (li2 != null) panel2.Level = li2.Checked ? trackBar1.Value : 5;
         }
 
         private void setContrast()
         {
-            panel1.Contrast = panel2.Contrast = checkBox1.Checked ? trackBar2.Value * 16 : 128;
+            var li1 = panel1.Tag as ListViewItem;
+            var li2 = panel2.Tag as ListViewItem;
+            if (li1 != null) panel1.Contrast = li1.Checked ? trackBar2.Value * 16 : 128;
+            if (li2 != null) panel2.Contrast = li2.Checked ? trackBar2.Value * 16 : 128;
         }
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
