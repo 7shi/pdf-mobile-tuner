@@ -108,8 +108,8 @@ namespace CommonLib
             if (bmplv == null) return;
 
             if (cache != null) cache.Dispose();
-            var sz = ClientSize;
-            cache = Utils.ResizeImage(bmplv, sz);
+            var cs = ClientSize;
+            cache = Utils.ResizeImage(bmplv, cs);
             if (cache == null) return;
 
             Utils.AdjustContrast(cache, contrast);
@@ -118,9 +118,9 @@ namespace CommonLib
 
         private void setBox()
         {
-            var sz = ClientSize;
-            cx = (sz.Width - cache.Width) / 2;
-            cy = (sz.Height - cache.Height) / 2;
+            var cs = ClientSize;
+            cx = (cs.Width - cache.Width) / 2;
+            cy = (cs.Height - cache.Height) / 2;
             bx = cx + boxBounds.X * cache.Width / bitmap.Width;
             by = cy + boxBounds.Y * cache.Height / bitmap.Height;
             bw = boxBounds.Width * cache.Width / bitmap.Width;
@@ -160,25 +160,35 @@ namespace CommonLib
                 int bx2 = bx + bw, by2 = by + bh;
                 if (bx - th <= x && x <= bx2 + th && by - th <= y && y <= by2 + th)
                 {
+                    // 435
+                    // 1 2
+                    // 768
                     if (bx - th <= x && x <= bx + th)
-                    {
                         State = 1;
-                        cur = Cursors.SizeWE;
-                    }
                     else if (bx2 - th <= x && x <= bx2 + th)
-                    {
                         State = 2;
-                        cur = Cursors.SizeWE;
-                    }
-                    else if (by - th <= y && y <= by + th)
-                    {
-                        State = 3;
-                        cur = Cursors.SizeNS;
-                    }
+                    if (by - th <= y && y <= by + th)
+                        State += 3;
                     else if (by2 - th <= y && y <= by2 + th)
+                        State += 6;
+                    switch (State)
                     {
-                        State = 4;
-                        cur = Cursors.SizeNS;
+                        case 1:
+                        case 2:
+                            cur = Cursors.SizeWE;
+                            break;
+                        case 3:
+                        case 6:
+                            cur = Cursors.SizeNS;
+                            break;
+                        case 4:
+                        case 8:
+                            cur = Cursors.SizeNWSE;
+                            break;
+                        case 5:
+                        case 7:
+                            cur = Cursors.SizeNESW;
+                            break;
                     }
                 }
             }
@@ -221,25 +231,34 @@ namespace CommonLib
             base.OnMouseMove(e);
             if (IsDragging)
             {
+                const int min = 100;
                 int dx = (e.X - ClickLocation.X) * bitmap.Width / cache.Width;
                 int dy = (e.Y - ClickLocation.Y) * bitmap.Height / cache.Height;
                 var b = LastBoxBounds;
-                switch (State)
+                // 435
+                // 1 2
+                // 768
+                if (State == 1 || State == 4 || State == 7)
                 {
-                    case 1:
-                        b.X += dx;
-                        b.Width -= dx;
-                        break;
-                    case 2:
-                        b.Width += dx;
-                        break;
-                    case 3:
-                        b.Y += dy;
-                        b.Height -= dy;
-                        break;
-                    case 4:
-                        b.Height += dy;
-                        break;
+                    dx = Math.Min(Math.Max(dx, -b.X), b.Width - min);
+                    b.X += dx;
+                    b.Width -= dx;
+                }
+                else if (State == 2 || State == 5 || State == 8)
+                {
+                    dx = Math.Min(Math.Max(dx, -b.Width + min), bitmap.Width - b.Right);
+                    b.Width += dx;
+                }
+                if (State == 3 || State == 4 || State == 5)
+                {
+                    dy = Math.Min(Math.Max(dy, -b.Y), b.Height - min);
+                    b.Y += dy;
+                    b.Height -= dy;
+                }
+                else if (State == 6 || State == 7 || State == 8)
+                {
+                    dy = Math.Min(Math.Max(dy, -b.Height + min), bitmap.Height - b.Bottom);
+                    b.Height += dy;
                 }
                 BoxBounds = b;
             }
@@ -252,16 +271,6 @@ namespace CommonLib
             base.OnMouseUp(e);
             if (e.Button == MouseButtons.Left && IsDragging)
                 IsDragging = false;
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Escape && IsDragging)
-            {
-                IsDragging = false;
-                BoxBounds = LastBoxBounds;
-            }
         }
     }
 }
