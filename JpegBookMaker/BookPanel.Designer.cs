@@ -72,7 +72,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(131, 208);
+            this.listView1.Size = new System.Drawing.Size(131, 214);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.SmallIcon;
@@ -145,7 +145,7 @@
             this.curvePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.curvePanel.Location = new System.Drawing.Point(3, 3);
             this.curvePanel.Name = "curvePanel";
-            this.curvePanel.Size = new System.Drawing.Size(117, 84);
+            this.curvePanel.Size = new System.Drawing.Size(117, 78);
             this.curvePanel.TabIndex = 0;
             this.curvePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
             this.curvePanel.Resize += new System.EventHandler(this.panel3_Resize);
@@ -153,7 +153,7 @@
             // trackBar1
             // 
             this.trackBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar1.Location = new System.Drawing.Point(3, 87);
+            this.trackBar1.Location = new System.Drawing.Point(3, 81);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(117, 45);
             this.trackBar1.TabIndex = 1;
@@ -163,7 +163,7 @@
             // trackBar2
             // 
             this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar2.Location = new System.Drawing.Point(3, 132);
+            this.trackBar2.Location = new System.Drawing.Point(3, 126);
             this.trackBar2.Maximum = 15;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
@@ -204,7 +204,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(86, 118);
             this.panel2.TabIndex = 1;
-            this.panel2.BoxBoundsChanged += new System.EventHandler(this.panel2_BoxBoundsChanged);
             // 
             // panel1
             // 
@@ -219,7 +218,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(86, 118);
             this.panel1.TabIndex = 0;
-            this.panel1.BoxBoundsChanged += new System.EventHandler(this.panel1_BoxBoundsChanged);
             // 
             // BookPanel
             // 

@@ -60,8 +60,6 @@ namespace CommonLib
             }
         }
 
-        public event EventHandler BoxBoundsChanged;
-
         private Rectangle boxBounds;
         public Rectangle BoxBounds
         {
@@ -70,8 +68,6 @@ namespace CommonLib
             {
                 boxBounds = value;
                 Invalidate();
-                if (BoxBoundsChanged != null)
-                    BoxBoundsChanged(this, EventArgs.Empty);
             }
         }
 
@@ -105,6 +101,8 @@ namespace CommonLib
             Invalidate();
         }
 
+        private int cx, cy, bx, by, bw, bh;
+
         private void setCache()
         {
             if (bmplv == null) return;
@@ -116,6 +114,13 @@ namespace CommonLib
 
             Utils.AdjustContrast(cache, contrast);
             if (grayScale) Utils.GrayScale(cache);
+
+            cx = (sz.Width - cache.Width) / 2;
+            cy = (sz.Height - cache.Height) / 2;
+            bx = cx + boxBounds.X * cache.Width / bitmap.Width;
+            by = cy + boxBounds.Y * cache.Height / bitmap.Height;
+            bw = boxBounds.Width * cache.Width / bitmap.Width;
+            bh = boxBounds.Height * cache.Height / bitmap.Height;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -123,19 +128,10 @@ namespace CommonLib
             if (cache == null) setCache();
             if (cache != null)
             {
-                var sz = ClientSize;
-                var x = (sz.Width - cache.Width) / 2;
-                var y = (sz.Height - cache.Height) / 2;
-                e.Graphics.DrawImage(cache, x, y);
+                e.Graphics.DrawImage(cache, cx, cy);
                 if (!boxBounds.Size.IsEmpty)
-                {
-                    var bx = boxBounds.X * cache.Width / bitmap.Width;
-                    var by = boxBounds.Y * cache.Height / bitmap.Height;
-                    var bw = boxBounds.Width * cache.Width / bitmap.Width;
-                    var bh = boxBounds.Height * cache.Height / bitmap.Height;
                     using (var pen = new Pen(Color.Red, 2))
-                        e.Graphics.DrawRectangle(pen, x + bx, y + by, bw, bh);
-                }
+                        e.Graphics.DrawRectangle(pen, bx, by, bw, bh);
             }
             base.OnPaint(e);
         }
@@ -145,6 +141,45 @@ namespace CommonLib
             base.OnResize(e);
             setCache();
             Invalidate();
+        }
+
+        public int State { get; private set; }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            State = 0;
+            var cur = Cursors.Default;
+            if (!boxBounds.Size.IsEmpty && cache != null)
+            {
+                const int th = 3;
+                int bx2 = bx + bw, by2 = by + bh;
+                if (bx - th <= e.X && e.X <= bx2 + th && by - th <= e.Y && e.Y <= by2 + th)
+                {
+                    if (bx - th <= e.X && e.X <= bx + th)
+                    {
+                        State = 1;
+                        cur = Cursors.SizeWE;
+                    }
+                    else if (bx2 - th <= e.X && e.X <= bx2 + th)
+                    {
+                        State = 2;
+                        cur = Cursors.SizeWE;
+                    }
+                    else if (by - th <= e.Y && e.Y <= by + th)
+                    {
+                        State = 3;
+                        cur = Cursors.SizeNS;
+                    }
+                    else if (by2 - th <= e.Y && e.Y <= by2 + th)
+                    {
+                        State = 4;
+                        cur = Cursors.SizeNS;
+                    }
+                }
+            }
+            if (Cursor != cur) Cursor = cur;
         }
     }
 }

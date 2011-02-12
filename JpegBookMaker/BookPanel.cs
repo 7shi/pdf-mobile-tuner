@@ -152,9 +152,10 @@ namespace JpegBookMaker
                 return;
             }
             int w = bmp.Width, h = bmp.Height;
-            int bx = w / 40, by = h / 40;
-            panel1.BoxBounds = new Rectangle(bx, by, w - bx * 3, h - by * 2);
-            panel2.BoxBounds = new Rectangle(bx * 2, by, w - bx * 3, h - by * 2);
+            int bx = w / 40, by = h / 40, bw = w - bx * 3, bh = h - by * 2;
+            BoxSize = new Size(bw, bh);
+            panel1.BoxBounds = new Rectangle(bx, by, bw, bh);
+            panel2.BoxBounds = new Rectangle(bx * 2, by, bw, bh);
         }
 
         private ListViewItem lastFocused;
@@ -434,16 +435,6 @@ namespace JpegBookMaker
                 if (BoxResize != null)
                     BoxResize(this, EventArgs.Empty);
             }
-        }
-
-        private void panel1_BoxBoundsChanged(object sender, EventArgs e)
-        {
-            BoxSize = panel1.BoxBounds.Size;
-        }
-
-        private void panel2_BoxBoundsChanged(object sender, EventArgs e)
-        {
-            BoxSize = panel2.BoxBounds.Size;
         }
     }
 }
