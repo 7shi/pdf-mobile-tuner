@@ -451,7 +451,7 @@ namespace JpegBookMaker
             var b2 = panel2.BoxBounds;
             if (st == 2 || st == 5 || st == 8) b2.X += b2.Width - b1.Width;
             b2.Y = b1.Y;
-            b2.Size = b1.Size;
+            BoxSize = b2.Size = b1.Size;
             ignore = true;
             panel2.BoxBounds = b2;
             ignore = false;
@@ -467,7 +467,7 @@ namespace JpegBookMaker
             var b2 = panel2.BoxBounds;
             if (st == 2 || st == 5 || st == 8) b1.X += b1.Width - b2.Width;
             b1.Y = b2.Y;
-            b1.Size = b2.Size;
+            BoxSize = b1.Size = b2.Size;
             ignore = true;
             panel1.BoxBounds = b1;
             ignore = false;
