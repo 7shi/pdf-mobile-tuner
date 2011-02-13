@@ -217,6 +217,7 @@ namespace CommonLib
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseClick(e);
+            if (!Focused) Focus();
             if (e.Button == MouseButtons.Left && State != 0)
             {
                 IsDragging = true;
@@ -275,6 +276,21 @@ namespace CommonLib
             base.OnMouseUp(e);
             if (e.Button == MouseButtons.Left && IsDragging)
                 IsDragging = false;
+        }
+
+        private Color back;
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            back = BackColor;
+            BackColor = SystemColors.Highlight;
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            BackColor = back;
         }
     }
 }
