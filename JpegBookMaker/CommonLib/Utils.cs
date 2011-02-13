@@ -166,4 +166,6 @@ namespace CommonLib
             bmp.UnlockBits(data);
         }
     }
+
+    public delegate void Action();
 }

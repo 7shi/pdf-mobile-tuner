@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -102,11 +103,11 @@ namespace JpegBookMaker
         }
 
         private bool stop = false;
-        private string bmpPath;
+        public string ImagePath { get; private set; }
 
-        public void Open(string bmpPath)
+        public void Open(string path)
         {
-            this.bmpPath = bmpPath;
+            ImagePath = path;
             ClearPanel();
             RightBinding = false;
             stop = true;
@@ -115,7 +116,7 @@ namespace JpegBookMaker
             listView1.Items.Clear();
             listView1.BeginUpdate();
             listView1.Items.Add(new ListViewItem("(空)"));
-            var files = new List<string>(Directory.GetFiles(bmpPath));
+            var files = new List<string>(Directory.GetFiles(path));
             files.Sort(new NumberStringComparer());
             foreach (var file in files)
             {
@@ -213,9 +214,9 @@ namespace JpegBookMaker
             if (bmp2 != null) bmp2.Dispose();
             bmp1 = bmp2 = null;
             if (li1 != null && li1.Tag is string)
-                bmp1 = new Bitmap(Path.Combine(bmpPath, li1.Tag as string));
+                bmp1 = new Bitmap(Path.Combine(ImagePath, li1.Tag as string));
             if (li2 != null && li2.Tag is string)
-                bmp2 = new Bitmap(Path.Combine(bmpPath, li2.Tag as string));
+                bmp2 = new Bitmap(Path.Combine(ImagePath, li2.Tag as string));
             panel1.Bitmap = bmp1;
             panel2.Bitmap = bmp2;
             setState();
@@ -473,6 +474,104 @@ namespace JpegBookMaker
             ignore = false;
             panel1.Refresh();
             panel2.Refresh();
+        }
+
+        public Size DisplayBoxSize
+        {
+            get
+            {
+                var bmp = panel1.Bitmap;
+                if (bmp == null)
+                    bmp = panel2.Bitmap;
+                if (bmp == null)
+                    return Size.Empty;
+                var sz2 = Utils.GetSize(bmp.Size, panel1.ClientSize);
+                return new Size(
+                    boxSize.Width * sz2.Width / bmp.Width,
+                    boxSize.Height * sz2.Height / bmp.Height);
+            }
+        }
+
+        public void Save(BackgroundWorker bw, int ow, int oh, bool r)
+        {
+            var dir = ImagePath;
+            var outdir = Path.Combine(dir, "output");
+            if (!Directory.Exists(outdir))
+                Directory.CreateDirectory(outdir);
+            int count = 0, lv = 0, ct = 0;
+            Invoke(new Action(() =>
+            {
+                count = listView1.Items.Count;
+                lv = trackBar1.Value;
+                ct = trackBar2.Value * 16;
+            }));
+            int p = 0;
+            for (int i = 0, no = 1; i < count; i++)
+            {
+                if (bw.CancellationPending) break;
+                int pp = i * 100 / count;
+                if (p != pp) bw.ReportProgress(p = pp);
+
+                string name = "";
+                bool gray = false;
+                Bitmap src = null;
+                Invoke(new Action(() =>
+                {
+                    var li = listView1.Items[i];
+                    name = li.Tag as string;
+                    if (name != null)
+                    {
+                        gray = li.Checked;
+                        if (li == panel1.Tag)
+                            src = new Bitmap(panel1.Bitmap);
+                        else if (li == panel2.Tag)
+                            src = new Bitmap(panel2.Bitmap);
+                    }
+                }));
+                if (name == null) continue;
+                if (src == null)
+                    src = new Bitmap(Path.Combine(ImagePath, name));
+                Utils.AdjustLevels(src, gray ? lv : 5);
+                var box = (i & 1) == 0 ? panel1.BoxBounds : panel2.BoxBounds;
+                using (var bmp = GetBitmap(src, box, ow, oh))
+                {
+                    Utils.AdjustContrast(bmp, gray ? ct : 128);
+                    if (gray) Utils.GrayScale(bmp);
+                    if (r) bmp.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    var jpg = Path.Combine(outdir, string.Format("{0:0000}.jpg", no++));
+                    bmp.Save(jpg, ImageFormat.Jpeg);
+                }
+                src.Dispose();
+            }
+        }
+
+        private Bitmap GetBitmap(Bitmap src, Rectangle box, int ow, int oh)
+        {
+            int w = box.Width, h = box.Height;
+            if (ow > 0 && oh > 0)
+            {
+                var sz = Utils.GetSize(box.Size, new Size(ow, oh));
+                w = sz.Width;
+                h = sz.Height;
+            }
+            else if (ow > 0)
+            {
+                h = h * ow / w;
+                w = ow;
+            }
+            else if (oh > 0)
+            {
+                w = w * oh / h;
+                h = oh;
+            }
+            var ret = new Bitmap(w, h);
+            using (var g = Graphics.FromImage(ret))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                var dest = new Rectangle(0, 0, w, h);
+                g.DrawImage(src, dest, box.X, box.Y, box.Width, box.Height, GraphicsUnit.Pixel, new ImageAttributes());
+            }
+            return ret;
         }
     }
 }

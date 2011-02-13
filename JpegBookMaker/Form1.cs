@@ -13,11 +13,14 @@ namespace JpegBookMaker
 {
     public partial class Form1 : Form
     {
+        private SaveDialog saveDialog = new SaveDialog();
+
         public Form1()
         {
             InitializeComponent();
+            saveDialog.BookPanel = bookPanel1;
 #if DEBUG
-            folderBrowserDialog1.SelectedPath = @"E:\temp";
+            folderBrowserDialog1.SelectedPath = @"M:\";
 #endif
         }
 
@@ -30,10 +33,27 @@ namespace JpegBookMaker
         {
             if (folderBrowserDialog1.ShowDialog(this) != DialogResult.OK) return;
 
-            var bmpPath = folderBrowserDialog1.SelectedPath;
-            toolStripStatusLabel1.Text = bmpPath;
-            bookPanel1.Open(bmpPath);
+            var path = folderBrowserDialog1.SelectedPath;
+            toolStripStatusLabel1.Text = path;
+            bookPanel1.Open(path);
             rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
+            saveToolStripMenuItem.Enabled = true;
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveDialog.ShowDialog(this);
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bookPanel1.SelectAll();
+        }
+
+        private void rightBindingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var menu = rightBindingToolStripMenuItem;
+            bookPanel1.RightBinding = menu.Checked = !menu.Checked;
         }
 
         private void bookPanel1_Resize(object sender, EventArgs e)
@@ -46,32 +66,13 @@ namespace JpegBookMaker
             setStatusLabel();
         }
 
-        private void rightBindingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var menu = rightBindingToolStripMenuItem;
-            bookPanel1.RightBinding = menu.Checked = !menu.Checked;
-        }
-
-        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            bookPanel1.SelectAll();
-        }
-
         private void setStatusLabel()
         {
-            var bmp = bookPanel1.Panel1.Bitmap;
-            if (bmp == null)
-                bmp = bookPanel1.Panel2.Bitmap;
-            if (bmp == null)
-            {
+            var sz = bookPanel1.DisplayBoxSize;
+            if (sz.IsEmpty)
                 toolStripStatusLabel2.Text = "";
-                return;
-            }
-            var bsz = bookPanel1.BoxSize;
-            var sz2 = Utils.GetSize(bmp.Size, bookPanel1.Panel1.ClientSize);
-            var w = bsz.Width * sz2.Width / bmp.Width;
-            var h = bsz.Height * sz2.Height / bmp.Height;
-            toolStripStatusLabel2.Text = w + "x" + h;
+            else
+                toolStripStatusLabel2.Text = sz.Width + "x" + sz.Height;
         }
     }
 }
