@@ -284,7 +284,7 @@ namespace CommonLib
         {
             base.OnGotFocus(e);
             back = BackColor;
-            BackColor = SystemColors.Highlight;
+            if (Tag != null) BackColor = SystemColors.Highlight;
         }
 
         protected override void OnLostFocus(EventArgs e)

@@ -79,7 +79,7 @@ namespace JpegBookMaker
             }
         }
 
-        private void panel5_Resize(object sender, EventArgs e)
+        private void rightPanel_Resize(object sender, EventArgs e)
         {
             adjustPanel();
         }
@@ -115,7 +115,7 @@ namespace JpegBookMaker
             lastFocused = null;
             listView1.Items.Clear();
             listView1.BeginUpdate();
-            listView1.Items.Add(new ListViewItem("(空)"));
+            listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
             var files = new List<string>(Directory.GetFiles(path));
             files.Sort(new NumberStringComparer());
             foreach (var file in files)
@@ -131,7 +131,7 @@ namespace JpegBookMaker
                     case ".tiff":
                         var fn = Path.GetFileName(file);
                         var fn2 = Path.GetFileNameWithoutExtension(file);
-                        listView1.Items.Add(new ListViewItem(fn2) { Tag = fn });
+                        listView1.Items.Add(new ListViewItem(fn2) { Tag = fn, Checked = true });
                         break;
                 }
             }
@@ -144,6 +144,8 @@ namespace JpegBookMaker
             }
             setBoxes();
             stop = false;
+            checkBox1.Enabled = true;
+            checkBox1.Checked = false;
         }
 
         private void setBoxes()
@@ -240,12 +242,12 @@ namespace JpegBookMaker
             }
         }
 
-        private void panel3_Paint(object sender, PaintEventArgs e)
+        private void curvePanel_Paint(object sender, PaintEventArgs e)
         {
             var sz = curvePanel.ClientSize;
             int w = sz.Width, h = sz.Height;
-            var lt = Utils.GetLevelsTable(trackBar1.Value);
-            var ct = Utils.GetContrastTable(trackBar2.Value * 16);
+            var lt = Utils.GetLevelsTable(checkBox1.Checked ? trackBar1.Value : 5);
+            var ct = Utils.GetContrastTable(checkBox1.Checked ? trackBar2.Value * 16 : 128);
             var pts = new PointF[256];
             for (int i = 0; i < 256; i++)
             {
@@ -258,7 +260,7 @@ namespace JpegBookMaker
             e.Graphics.SmoothingMode = sm;
         }
 
-        private void panel3_Resize(object sender, EventArgs e)
+        private void curvePanel_Resize(object sender, EventArgs e)
         {
             curvePanel.Invalidate();
         }
@@ -572,6 +574,12 @@ namespace JpegBookMaker
                 g.DrawImage(src, dest, box.X, box.Y, box.Width, box.Height, GraphicsUnit.Pixel, new ImageAttributes());
             }
             return ret;
+        }
+
+        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        {
+            trackBar1.Enabled = trackBar2.Enabled = checkBox1.Checked;
+            curvePanel.Invalidate();
         }
     }
 }

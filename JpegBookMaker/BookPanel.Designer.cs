@@ -41,6 +41,7 @@
             this.curvePanel = new System.Windows.Forms.Panel();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.rightPanel = new System.Windows.Forms.Panel();
             this.panel2 = new CommonLib.PicturePanel();
@@ -132,12 +133,13 @@
             this.tabPage1.Controls.Add(this.curvePanel);
             this.tabPage1.Controls.Add(this.trackBar1);
             this.tabPage1.Controls.Add(this.trackBar2);
+            this.tabPage1.Controls.Add(this.checkBox1);
             this.tabPage1.Location = new System.Drawing.Point(4, 21);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(123, 180);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "グレー";
+            this.tabPage1.Text = "プロパティ";
             // 
             // curvePanel
             // 
@@ -145,15 +147,16 @@
             this.curvePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.curvePanel.Location = new System.Drawing.Point(3, 3);
             this.curvePanel.Name = "curvePanel";
-            this.curvePanel.Size = new System.Drawing.Size(117, 84);
+            this.curvePanel.Size = new System.Drawing.Size(117, 68);
             this.curvePanel.TabIndex = 0;
-            this.curvePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
-            this.curvePanel.Resize += new System.EventHandler(this.panel3_Resize);
+            this.curvePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.curvePanel_Paint);
+            this.curvePanel.Resize += new System.EventHandler(this.curvePanel_Resize);
             // 
             // trackBar1
             // 
             this.trackBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar1.Location = new System.Drawing.Point(3, 87);
+            this.trackBar1.Enabled = false;
+            this.trackBar1.Location = new System.Drawing.Point(3, 71);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(117, 45);
             this.trackBar1.TabIndex = 1;
@@ -163,7 +166,8 @@
             // trackBar2
             // 
             this.trackBar2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trackBar2.Location = new System.Drawing.Point(3, 132);
+            this.trackBar2.Enabled = false;
+            this.trackBar2.Location = new System.Drawing.Point(3, 116);
             this.trackBar2.Maximum = 15;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
@@ -171,6 +175,19 @@
             this.trackBar2.TabIndex = 2;
             this.trackBar2.Value = 11;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.checkBox1.Enabled = false;
+            this.checkBox1.Location = new System.Drawing.Point(3, 161);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(117, 16);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "グレースケール";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
             // 
             // splitter1
             // 
@@ -189,7 +206,7 @@
             this.rightPanel.Name = "rightPanel";
             this.rightPanel.Size = new System.Drawing.Size(417, 413);
             this.rightPanel.TabIndex = 2;
-            this.rightPanel.Resize += new System.EventHandler(this.panel5_Resize);
+            this.rightPanel.Resize += new System.EventHandler(this.rightPanel_Resize);
             // 
             // panel2
             // 
@@ -262,5 +279,6 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
