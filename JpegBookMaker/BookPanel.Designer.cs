@@ -184,10 +184,10 @@
             this.checkBox1.Location = new System.Drawing.Point(3, 161);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(117, 16);
-            this.checkBox1.TabIndex = 2;
+            this.checkBox1.TabIndex = 3;
             this.checkBox1.Text = "グレースケール";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // splitter1
             // 
@@ -220,9 +220,11 @@
             this.panel2.Level = 0;
             this.panel2.Location = new System.Drawing.Point(92, 0);
             this.panel2.Name = "panel2";
+            this.panel2.Selected = false;
             this.panel2.Size = new System.Drawing.Size(86, 118);
             this.panel2.TabIndex = 1;
             this.panel2.BoxResize += new System.EventHandler(this.panel2_BoxResize);
+            this.panel2.Enter += new System.EventHandler(this.panel2_Enter);
             // 
             // panel1
             // 
@@ -236,9 +238,11 @@
             this.panel1.Level = 0;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
+            this.panel1.Selected = false;
             this.panel1.Size = new System.Drawing.Size(86, 118);
             this.panel1.TabIndex = 0;
             this.panel1.BoxResize += new System.EventHandler(this.panel1_BoxResize);
+            this.panel1.Enter += new System.EventHandler(this.panel1_Enter);
             // 
             // BookPanel
             // 

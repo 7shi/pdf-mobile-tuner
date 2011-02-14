@@ -191,8 +191,6 @@
             // 
             // bookPanel1
             // 
-            this.bookPanel1.BoxBounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.bookPanel1.BoxSize = new System.Drawing.Size(0, 0);
             this.bookPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bookPanel1.Location = new System.Drawing.Point(0, 24);
             this.bookPanel1.Name = "bookPanel1";

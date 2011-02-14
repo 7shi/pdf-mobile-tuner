@@ -110,6 +110,15 @@ namespace CommonLib
             Invalidate();
         }
 
+        public Size ImageSize
+        {
+            get
+            {
+                var cs = ClientSize;
+                return new Size(cs.Width - 8, cs.Height - 8);
+            }
+        }
+
         private int cx, cy, bx, by, bw, bh;
 
         private void setCache()
@@ -117,8 +126,7 @@ namespace CommonLib
             if (bmplv == null) return;
 
             if (cache != null) cache.Dispose();
-            var cs = ClientSize;
-            cache = Utils.ResizeImage(bmplv, cs);
+            cache = Utils.ResizeImage(bmplv, ImageSize);
             if (cache == null) return;
 
             Utils.AdjustContrast(cache, contrast);
@@ -142,6 +150,9 @@ namespace CommonLib
             if (cache != null)
             {
                 setBox();
+                if (Selected)
+                    using (var pen = new Pen(SystemColors.Highlight, 4))
+                        e.Graphics.DrawRectangle(pen, cx - 2, cy - 2, cache.Width + 4, cache.Height + 4);
                 e.Graphics.DrawImage(cache, cx, cy);
                 if (!boxBounds.Size.IsEmpty)
                     using (var pen = new Pen(Color.Red, 2))
@@ -283,19 +294,29 @@ namespace CommonLib
                 IsDragging = false;
         }
 
-        private Color back;
-
-        protected override void OnGotFocus(EventArgs e)
+        public Size DisplayBoxSize
         {
-            base.OnGotFocus(e);
-            back = BackColor;
-            if (Tag != null) BackColor = SystemColors.Highlight;
+            get
+            {
+                if (bitmap == null) return Size.Empty;
+                var csz = Utils.GetSize(bitmap.Size, ImageSize);
+                var bsz = boxBounds.Size;
+                return new Size(
+                    bsz.Width * csz.Width / bitmap.Width,
+                    bsz.Height * csz.Height / bitmap.Height);
+            }
         }
 
-        protected override void OnLostFocus(EventArgs e)
+        private bool selected;
+        public bool Selected
         {
-            base.OnLostFocus(e);
-            BackColor = back;
+            get { return selected; }
+            set
+            {
+                if (selected == value) return;
+                selected = value;
+                Invalidate();
+            }
         }
     }
 }
