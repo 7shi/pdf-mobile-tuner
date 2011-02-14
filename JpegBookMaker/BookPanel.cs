@@ -630,6 +630,7 @@ namespace JpegBookMaker
 
                 PageInfo pi = null;
                 Bitmap src = null;
+                string path = null;
                 Invoke(new Action(() =>
                 {
                     var li = listView1.Items[i];
@@ -638,10 +639,12 @@ namespace JpegBookMaker
                     else if (li == panel2.Tag)
                         src = new Bitmap(panel2.Bitmap);
                     pi = getInfo(li);
+                    if (li.Tag is PageInfo)
+                        path = (li.Tag as PageInfo).Path;
                 }));
-                if (pi == null) continue;
+                if (pi == null || path == null) continue;
                 if (src == null)
-                    src = new Bitmap(Path.Combine(ImagePath, pi.Path));
+                    src = new Bitmap(Path.Combine(ImagePath, path));
                 Utils.AdjustLevels(src, pi.IsGrayScale ? pi.Level : 5);
                 var box = boxes[i & 1];
                 using (var bmp = GetBitmap(src, box, ow, oh))
