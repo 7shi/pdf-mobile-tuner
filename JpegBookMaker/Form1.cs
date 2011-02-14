@@ -70,10 +70,17 @@ namespace JpegBookMaker
         private void setStatusLabel()
         {
             var sz = bookPanel1.DisplayBoxSize;
-            if (sz.IsEmpty)
+            if (sz.Width == 0)
+            {
                 toolStripStatusLabel2.Text = "";
+                toolStripStatusLabel3.Text = "";
+            }
             else
-                toolStripStatusLabel2.Text = sz.Width + "x" + sz.Height;
+            {
+                double w = sz.Width, h = sz.Height;
+                toolStripStatusLabel2.Text = w + "x" + h;
+                toolStripStatusLabel3.Text = (h / w).ToString("0.00");
+            }
         }
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
