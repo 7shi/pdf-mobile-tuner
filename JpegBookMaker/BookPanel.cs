@@ -277,7 +277,21 @@ namespace JpegBookMaker
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!stop) ShowPage(listView1.FocusedItem);
+            if (stop) return;
+
+            ShowPage(listView1.FocusedItem);
+            setControls();
+        }
+
+        private void setControls()
+        {
+            ignore = true;
+            var pi = getInfo(lastFocused) ?? common;
+            trackBar1.Value = pi.Level;
+            trackBar2.Value = pi.Contrast;
+            checkBox1.Checked = pi.IsGrayScale;
+            tabPage1.Text = pi == common ? "プロパティ（共通）" : "プロパティ（個別）";
+            ignore = false;
         }
 
         private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -290,7 +304,6 @@ namespace JpegBookMaker
                 pp = panel2;
             else
                 return;
-            ignore = true;
             if (!e.Item.Checked)
             {
                 var pi = e.Item.Tag as PageInfo;
@@ -299,12 +312,8 @@ namespace JpegBookMaker
                 pi.Contrast = trackBar2.Value;
                 pi.IsGrayScale = checkBox1.Checked;
             }
-            else
-            {
-                trackBar1.Value = common.Level;
-                trackBar2.Value = common.Contrast;
-                checkBox1.Checked = common.IsGrayScale;
-            }
+            setControls();
+            ignore = true;
             pp.BoxBounds = getBounds(pp);
             ignore = false;
             setState();
@@ -339,7 +348,7 @@ namespace JpegBookMaker
         {
             if (ignore) return;
 
-            var pi = GetInfo(lastFocused);
+            var pi = getInfo(lastFocused);
             if (pi == null) return;
 
             var cur = Cursor.Current;
@@ -358,7 +367,7 @@ namespace JpegBookMaker
         {
             if (ignore) return;
 
-            var pi = GetInfo(lastFocused);
+            var pi = getInfo(lastFocused);
             if (pi == null) return;
 
             var cur = Cursor.Current;
@@ -381,7 +390,7 @@ namespace JpegBookMaker
             Cursor.Current = Cursors.WaitCursor;
 
             trackBar1.Enabled = trackBar2.Enabled = checkBox1.Checked;
-            var pi = GetInfo(lastFocused);
+            var pi = getInfo(lastFocused);
             if (pi != null)
             {
                 pi.IsGrayScale = checkBox1.Checked;
@@ -398,24 +407,24 @@ namespace JpegBookMaker
         {
             setLevel();
             setContrast();
-            var pi1 = GetInfo(panel1.Tag as ListViewItem);
-            var pi2 = GetInfo(panel2.Tag as ListViewItem);
+            var pi1 = getInfo(panel1.Tag as ListViewItem);
+            var pi2 = getInfo(panel2.Tag as ListViewItem);
             if (pi1 != null) panel1.GrayScale = pi1.IsGrayScale;
             if (pi2 != null) panel2.GrayScale = pi2.IsGrayScale;
         }
 
         private void setLevel()
         {
-            var pi1 = GetInfo(panel1.Tag as ListViewItem);
-            var pi2 = GetInfo(panel2.Tag as ListViewItem);
+            var pi1 = getInfo(panel1.Tag as ListViewItem);
+            var pi2 = getInfo(panel2.Tag as ListViewItem);
             if (pi1 != null) panel1.Level = pi1.IsGrayScale ? pi1.Level : 5;
             if (pi2 != null) panel2.Level = pi2.IsGrayScale ? pi2.Level : 5;
         }
 
         private void setContrast()
         {
-            var pi1 = GetInfo(panel1.Tag as ListViewItem);
-            var pi2 = GetInfo(panel2.Tag as ListViewItem);
+            var pi1 = getInfo(panel1.Tag as ListViewItem);
+            var pi2 = getInfo(panel2.Tag as ListViewItem);
             if (pi1 != null) panel1.Contrast = pi1.IsGrayScale ? pi1.Contrast * 16 : 128;
             if (pi2 != null) panel2.Contrast = pi2.IsGrayScale ? pi2.Contrast * 16 : 128;
         }
@@ -628,7 +637,7 @@ namespace JpegBookMaker
                         src = new Bitmap(panel1.Bitmap);
                     else if (li == panel2.Tag)
                         src = new Bitmap(panel2.Bitmap);
-                    pi = GetInfo(li);
+                    pi = getInfo(li);
                 }));
                 if (pi == null) continue;
                 if (src == null)
@@ -703,7 +712,7 @@ namespace JpegBookMaker
             setSelection(panel2);
         }
 
-        private PageInfo GetInfo(ListViewItem li)
+        private PageInfo getInfo(ListViewItem li)
         {
             if (li == null)
                 return null;
