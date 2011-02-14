@@ -94,6 +94,11 @@ namespace CommonLib
 
         private void setBitmap()
         {
+            if (IsDragging)
+            {
+                IsDragging = false;
+                BoxBounds = LastBoxBounds;
+            }
             if (bmplv != null) bmplv.Dispose();
             if (cache != null) cache.Dispose();
             bmplv = cache = null;

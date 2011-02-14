@@ -31,6 +31,33 @@ namespace JpegBookMaker
             }
         }
 
+        public event EventHandler BoxResize;
+
+        private Rectangle boxBounds;
+        public Rectangle BoxBounds
+        {
+            get { return boxBounds; }
+            set
+            {
+                if (boxBounds == value) return;
+                var sz = boxBounds.Size;
+                boxBounds = value;
+                if (sz != value.Size && BoxResize != null)
+                    BoxResize(this, EventArgs.Empty);
+            }
+        }
+        public Size BoxSize
+        {
+            get { return boxBounds.Size; }
+            set
+            {
+                if (BoxSize == value) return;
+                boxBounds.Size = value;
+                if (BoxResize != null)
+                    BoxResize(this, EventArgs.Empty);
+            }
+        }
+
         public PicturePanel Panel1 { get { return panel1; } }
         public PicturePanel Panel2 { get { return panel2; } }
 
@@ -429,21 +456,6 @@ namespace JpegBookMaker
             stop = false;
         }
 
-        public event EventHandler BoxResize;
-
-        private Size boxSize;
-        public Size BoxSize
-        {
-            get { return boxSize; }
-            set
-            {
-                if (boxSize == value) return;
-                boxSize = value;
-                if (BoxResize != null)
-                    BoxResize(this, EventArgs.Empty);
-            }
-        }
-
         private bool ignore;
 
         private void panel1_BoxResize(object sender, EventArgs e)
@@ -489,8 +501,8 @@ namespace JpegBookMaker
                     return Size.Empty;
                 var sz2 = Utils.GetSize(bmp.Size, panel1.ClientSize);
                 return new Size(
-                    boxSize.Width * sz2.Width / bmp.Width,
-                    boxSize.Height * sz2.Height / bmp.Height);
+                    boxBounds.Width * sz2.Width / bmp.Width,
+                    boxBounds.Height * sz2.Height / bmp.Height);
             }
         }
 
@@ -508,6 +520,11 @@ namespace JpegBookMaker
                 ct = trackBar2.Value * 16;
             }));
             int p = 0;
+            Rectangle[] boxes;
+            if (panel1.Left < panel2.Left)
+                boxes = new[] { panel1.BoxBounds, panel2.BoxBounds };
+            else
+                boxes = new[] { panel2.BoxBounds, panel1.BoxBounds };
             for (int i = 0, no = 1; i < count; i++)
             {
                 if (bw.CancellationPending) break;
@@ -534,7 +551,7 @@ namespace JpegBookMaker
                 if (src == null)
                     src = new Bitmap(Path.Combine(ImagePath, name));
                 Utils.AdjustLevels(src, gray ? lv : 5);
-                var box = (i & 1) == 0 ? panel1.BoxBounds : panel2.BoxBounds;
+                var box = boxes[i & 1];
                 using (var bmp = GetBitmap(src, box, ow, oh))
                 {
                     Utils.AdjustContrast(bmp, gray ? ct : 128);

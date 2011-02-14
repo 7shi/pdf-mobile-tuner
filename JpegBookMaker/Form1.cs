@@ -14,13 +14,14 @@ namespace JpegBookMaker
     public partial class Form1 : Form
     {
         private SaveDialog saveDialog = new SaveDialog();
+        private BookPanelHelp help;
 
         public Form1()
         {
             InitializeComponent();
             saveDialog.BookPanel = bookPanel1;
 #if DEBUG
-            folderBrowserDialog1.SelectedPath = @"M:\";
+            folderBrowserDialog1.SelectedPath = @"D:\pdf2jpeg";
 #endif
         }
 
@@ -73,6 +74,18 @@ namespace JpegBookMaker
                 toolStripStatusLabel2.Text = "";
             else
                 toolStripStatusLabel2.Text = sz.Width + "x" + sz.Height;
+        }
+
+        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (help == null)
+            {
+                help = new BookPanelHelp();
+                help.Owner = this;
+                var cs = ClientSize;
+                help.Location = PointToScreen(new Point(cs.Width - help.Width, 0));
+            }
+            help.Show();
         }
     }
 }

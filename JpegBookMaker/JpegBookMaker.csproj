@@ -49,6 +49,12 @@
     <Compile Include="BookPanel.Designer.cs">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="BookPanelHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BookPanelHelp.Designer.cs">
+      <DependentUpon>BookPanelHelp.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommonLib\MouseWheelMessageFilter.cs" />
     <Compile Include="CommonLib\NumberStringComparer.cs" />
     <Compile Include="Form1.cs">
@@ -71,6 +77,9 @@
     </Compile>
     <EmbeddedResource Include="BookPanel.resx">
       <DependentUpon>BookPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BookPanelHelp.resx">
+      <DependentUpon>BookPanelHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
