@@ -704,12 +704,12 @@ namespace JpegBookMaker
 
         private void panel1_Enter(object sender, EventArgs e)
         {
-            setSelection(panel1);
+            if (!panel1.IsDragging) setSelection(panel1);
         }
 
         private void panel2_Enter(object sender, EventArgs e)
         {
-            setSelection(panel2);
+            if (!panel2.IsDragging) setSelection(panel2);
         }
 
         private PageInfo getInfo(ListViewItem li)
@@ -720,6 +720,23 @@ namespace JpegBookMaker
                 return common;
             else
                 return li.Tag as PageInfo;
+        }
+
+        private void listView1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                if (panel1.IsDragging)
+                {
+                    panel1.IsDragging = false;
+                    panel1.BoxBounds = panel1.LastBoxBounds;
+                }
+                else if (panel2.IsDragging)
+                {
+                    panel2.IsDragging = false;
+                    panel2.BoxBounds = panel2.LastBoxBounds;
+                }
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace JpegBookMaker
             InitializeComponent();
             saveDialog.BookPanel = bookPanel1;
 #if DEBUG
-            folderBrowserDialog1.SelectedPath = @"D:\pdf2jpeg";
+            folderBrowserDialog1.SelectedPath = @"E:\temp";
 #endif
         }
 
