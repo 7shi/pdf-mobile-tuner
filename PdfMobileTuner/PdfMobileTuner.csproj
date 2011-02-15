@@ -67,6 +67,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="JpegBookMaker\PageInfo.cs" />
+    <Compile Include="PdfAnalyzer\AnalyzerPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PdfAnalyzer\AnalyzerPanel.designer.cs">
+      <DependentUpon>AnalyzerPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="PdfLib\PdfDeflateStream.cs" />
     <Compile Include="PdfLib\PdfDocument.cs" />
     <Compile Include="PdfLib\PdfLexer.cs" />
@@ -90,6 +96,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PdfAnalyzer\AnalyzerPanel.resx">
+      <DependentUpon>AnalyzerPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
