@@ -67,6 +67,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Book\PageInfo.cs" />
+    <Compile Include="PdfLib\PdfDeflateStream.cs" />
+    <Compile Include="PdfLib\PdfDocument.cs" />
+    <Compile Include="PdfLib\PdfLexer.cs" />
+    <Compile Include="PdfLib\PdfObject.cs" />
+    <Compile Include="PdfLib\PdfParser.cs" />
+    <Compile Include="PdfLib\SubStream.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonLib\Utils.cs" />
