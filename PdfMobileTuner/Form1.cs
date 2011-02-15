@@ -28,8 +28,15 @@ namespace PdfMobileTuner
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
-                openPDF(openFileDialog1.FileName);
+            if (openFileDialog1.ShowDialog(this) != DialogResult.OK) return;
+
+            bookPanel1.CloseDir();
+            var pdf = openFileDialog1.FileName;
+            toolStripStatusLabel1.Text = Path.GetFileNameWithoutExtension(pdf);
+            toolStripProgressBar1.Value = 0;
+            toolStripProgressBar1.Visible = true;
+            menuStrip1.Enabled = false;
+            analyzerPanel1.OpenPDF(pdf);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -40,11 +47,12 @@ namespace PdfMobileTuner
         {
             if (folderBrowserDialog1.ShowDialog(this) != DialogResult.OK) return;
 
+            analyzerPanel1.ClosePDF();
             var path = folderBrowserDialog1.SelectedPath;
             toolStripStatusLabel1.Text = path;
-            bookPanel1.Open(path);
+            bookPanel1.OpenDir(path);
             rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
-            saveDirToolStripMenuItem.Enabled = true;
+            saveToolStripMenuItem.Enabled = saveDirToolStripMenuItem.Enabled = true;
         }
 
         private void saveDirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -106,15 +114,6 @@ namespace PdfMobileTuner
             }
         }
 
-        private void openPDF(string pdf)
-        {
-            toolStripStatusLabel1.Text = Path.GetFileNameWithoutExtension(pdf);
-            toolStripProgressBar1.Value = 0;
-            toolStripProgressBar1.Visible = true;
-            menuStrip1.Enabled = false;
-            analyzerPanel1.OpenPDF(pdf);
-        }
-
         private void analyzerPanel1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             toolStripProgressBar1.Value = e.ProgressPercentage;
@@ -124,6 +123,9 @@ namespace PdfMobileTuner
         {
             toolStripProgressBar1.Visible = false;
             menuStrip1.Enabled = true;
+            bookPanel1.OpenPDF(analyzerPanel1.Document);
+            rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
+            saveToolStripMenuItem.Enabled = saveDirToolStripMenuItem.Enabled = true;
         }
 
         protected override void OnClosing(CancelEventArgs e)

@@ -11,17 +11,15 @@ namespace PdfAnalyzer
 {
     public partial class AnalyzerPanel : UserControl
     {
+        public PdfDocument Document { get; private set; }
+
         public AnalyzerPanel()
         {
             InitializeComponent();
         }
 
-        private PdfDocument doc;
-
         public void OpenPDF(string pdf)
         {
-            listView1.Items.Clear();
-            textBox1.Clear();
             ClosePDF();
 
             listView1.Enabled = textBox1.Enabled = false;
@@ -30,8 +28,10 @@ namespace PdfAnalyzer
 
         public void ClosePDF()
         {
-            if (doc != null) doc.Dispose();
-            doc = null;
+            listView1.Items.Clear();
+            textBox1.Clear();
+            if (Document != null) Document.Dispose();
+            Document = null;
         }
 
         private int progress;
@@ -39,7 +39,7 @@ namespace PdfAnalyzer
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             progress = 0;
-            doc = new PdfDocument(
+            Document = new PdfDocument(
                 e.Argument as string,
                 p => backgroundWorker1.ReportProgress(p));
         }
@@ -57,7 +57,7 @@ namespace PdfAnalyzer
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             listView1.BeginUpdate();
-            var keys = new List<int>(doc.Keys);
+            var keys = new List<int>(Document.Keys);
             keys.Sort();
             var prg = progress == 0 && ProgressChanged != null;
             int p = 0;
@@ -71,7 +71,7 @@ namespace PdfAnalyzer
                 }
                 var k = keys[i];
                 //var obj = doc.GetObject(k);
-                var obj = doc[k];
+                var obj = Document[k];
                 var pos = obj.Position;
                 var cells = new string[7];
                 bool sub = obj.ObjStm != 0;
@@ -105,7 +105,7 @@ namespace PdfAnalyzer
             if (li == null || !(li.Tag is int))
                 textBox1.Clear();
             else
-                textBox1.Text = doc.ReadObject((int)li.Tag);
+                textBox1.Text = Document.ReadObject((int)li.Tag);
         }
     }
 }

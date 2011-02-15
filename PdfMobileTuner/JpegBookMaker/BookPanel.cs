@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using CommonLib;
+using PdfLib;
 
 namespace JpegBookMaker
 {
@@ -42,7 +43,7 @@ namespace JpegBookMaker
         public PicturePanel Panel2 { get { return panel2; } }
 
         private int defaultLevel, defaultContrast;
-        private PageInfo common = new PageInfo(null);
+        private PageInfo common = new PageInfo();
 
         public BookPanel()
         {
@@ -106,7 +107,7 @@ namespace JpegBookMaker
             p2.Bounds = new Rectangle(w, 0, sz.Width - w, sz.Height);
         }
 
-        private void ClearPanel()
+        private void clearPanel()
         {
             if (panel1.Bitmap != null) panel1.Bitmap.Dispose();
             if (panel2.Bitmap != null) panel2.Bitmap.Dispose();
@@ -115,26 +116,46 @@ namespace JpegBookMaker
         }
 
         private bool stop = false;
-        public string ImagePath { get; private set; }
 
-        public void Open(string path)
+        private PdfDocument doc;
+
+        public void OpenPDF(PdfDocument doc)
         {
-            ImagePath = path;
-            ClearPanel();
-            RightBinding = false;
-            stop = true;
-            SetBitmap(null, null);
-            lastFocused = null;
-            common.Level = defaultLevel;
-            common.Contrast = defaultContrast;
-            common.Bounds = Rectangle.Empty;
-            trackBar1.Value = defaultLevel;
-            trackBar2.Value = defaultContrast;
-            checkBox1.Checked = false;
-            lastFocused = null;
-            OnBoxResize(EventArgs.Empty);
+            CloseDir();
+            this.doc = doc;
 
-            listView1.Items.Clear();
+            stop = true;
+            listView1.BeginUpdate();
+            listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
+            int n = doc.PageCount;
+            for (int i = 1; i <= n; i++)
+            {
+                var page = doc.GetPage(i);
+                var img = PageInfo.GetImage(page);
+                if (img != null)
+                {
+                    var pi = new PageInfo(page);
+                    var pn = string.Format("{0:0000}", i);
+                    listView1.Items.Add(new ListViewItem(pn) { Tag = pi, Checked = true });
+                }
+            }
+            listView1.EndUpdate();
+            stop = false;
+
+            ShowPage(listView1.Items[0]);
+            checkBox1.Enabled = true;
+            checkBox1.Checked = false;
+            panel1.Focus();
+        }
+
+        private string imagePath;
+
+        public void OpenDir(string path)
+        {
+            CloseDir();
+            imagePath = path;
+
+            stop = true;
             listView1.BeginUpdate();
             listView1.Items.Add(new ListViewItem("(空)") { Checked = true });
             var files = new List<string>(Directory.GetFiles(path));
@@ -159,10 +180,32 @@ namespace JpegBookMaker
             }
             listView1.EndUpdate();
             stop = false;
+
             ShowPage(listView1.Items[0]);
             checkBox1.Enabled = true;
             checkBox1.Checked = false;
             panel1.Focus();
+        }
+
+        public void CloseDir()
+        {
+            clearPanel();
+            doc = null;
+            imagePath = null;
+            RightBinding = false;
+            stop = true;
+            SetBitmap(null, null);
+            lastFocused = null;
+            common.Level = defaultLevel;
+            common.Contrast = defaultContrast;
+            common.Bounds = Rectangle.Empty;
+            trackBar1.Value = defaultLevel;
+            trackBar2.Value = defaultContrast;
+            checkBox1.Checked = false;
+            lastFocused = null;
+            OnBoxResize(EventArgs.Empty);
+            listView1.Items.Clear();
+            stop = false;
         }
 
         private void setBoxes()
@@ -233,9 +276,9 @@ namespace JpegBookMaker
             panel1.Bitmap = panel2.Bitmap = null;
             Bitmap bmp1 = null, bmp2 = null;
             if (li1 != null && li1.Tag is PageInfo)
-                bmp1 = new Bitmap(Path.Combine(ImagePath, (li1.Tag as PageInfo).Path));
+                bmp1 = (li1.Tag as PageInfo).GetBitmap(imagePath);
             if (li2 != null && li2.Tag is PageInfo)
-                bmp2 = new Bitmap(Path.Combine(ImagePath, (li2.Tag as PageInfo).Path));
+                bmp2 = (li2.Tag as PageInfo).GetBitmap(imagePath);
             panel1.Bitmap = bmp1;
             panel2.Bitmap = bmp2;
             if (common.Bounds.IsEmpty) setBoxes();
@@ -607,7 +650,7 @@ namespace JpegBookMaker
 
         public void Save(BackgroundWorker bw, int ow, int oh, bool r)
         {
-            var dir = ImagePath;
+            var dir = imagePath;
             var outdir = Path.Combine(dir, "output");
             if (!Directory.Exists(outdir))
                 Directory.CreateDirectory(outdir);
@@ -628,9 +671,8 @@ namespace JpegBookMaker
                 int pp = i * 100 / count;
                 if (p != pp) bw.ReportProgress(p = pp);
 
-                PageInfo pi = null;
+                PageInfo pi = null, lpi = null;
                 Bitmap src = null;
-                string path = null;
                 Invoke(new Action(() =>
                 {
                     var li = listView1.Items[i];
@@ -639,12 +681,11 @@ namespace JpegBookMaker
                     else if (li == panel2.Tag)
                         src = new Bitmap(panel2.Bitmap);
                     pi = getInfo(li);
-                    if (li.Tag is PageInfo)
-                        path = (li.Tag as PageInfo).Path;
+                    lpi = li.Tag as PageInfo;
                 }));
-                if (pi == null || path == null) continue;
+                if (pi == null || lpi == null) continue;
                 if (src == null)
-                    src = new Bitmap(Path.Combine(ImagePath, path));
+                    src = lpi.GetBitmap(imagePath);
                 Utils.AdjustLevels(src, pi.IsGrayScale ? pi.Level : 5);
                 var box = boxes[i & 1];
                 using (var bmp = GetBitmap(src, box, ow, oh))

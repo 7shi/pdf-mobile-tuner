@@ -170,6 +170,11 @@ namespace PdfLib
             return s;
         }
 
+        public Stream GetStream()
+        {
+            return GetStream(doc.Parser.Lexer.Stream);
+        }
+
         public byte[] GetStreamBytes(Stream stream)
         {
             var ms = new MemoryStream();
