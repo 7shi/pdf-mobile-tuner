@@ -28,6 +28,8 @@ namespace PdfMobileTuner
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
+                openPDF(openFileDialog1.FileName);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -66,6 +68,18 @@ namespace PdfMobileTuner
             bookPanel1.RightBinding = menu.Checked = !menu.Checked;
         }
 
+        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (help == null)
+            {
+                help = new BookPanelHelp();
+                help.Owner = this;
+                var cs = ClientSize;
+                help.Location = PointToScreen(new Point(cs.Width - help.Width, 0));
+            }
+            help.Show();
+        }
+
         private void bookPanel1_Resize(object sender, EventArgs e)
         {
             setStatusLabel();
@@ -92,16 +106,42 @@ namespace PdfMobileTuner
             }
         }
 
-        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openPDF(string pdf)
         {
-            if (help == null)
+            toolStripStatusLabel1.Text = Path.GetFileNameWithoutExtension(pdf);
+            toolStripProgressBar1.Value = 0;
+            toolStripProgressBar1.Visible = true;
+            menuStrip1.Enabled = false;
+            analyzerPanel1.OpenPDF(pdf);
+        }
+
+        private void analyzerPanel1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            toolStripProgressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void analyzerPanel1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            toolStripProgressBar1.Visible = false;
+            menuStrip1.Enabled = true;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            if (analyzerPanel1.IsBusy)
             {
-                help = new BookPanelHelp();
-                help.Owner = this;
-                var cs = ClientSize;
-                help.Location = PointToScreen(new Point(cs.Width - help.Width, 0));
+                MessageBox.Show(
+                    this, "処理中のため閉じることができません。", Text,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                e.Cancel = true;
             }
-            help.Show();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            analyzerPanel1.ClosePDF();
         }
     }
 }

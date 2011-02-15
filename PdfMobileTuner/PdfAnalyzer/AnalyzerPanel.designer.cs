@@ -58,7 +58,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
             this.splitContainer1.Size = new System.Drawing.Size(445, 496);
-            this.splitContainer1.SplitterDistance = 382;
+            this.splitContainer1.SplitterDistance = 419;
             this.splitContainer1.TabIndex = 6;
             // 
             // listView1
@@ -76,7 +76,7 @@
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(445, 382);
+            this.listView1.Size = new System.Drawing.Size(445, 419);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -123,7 +123,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(445, 110);
+            this.textBox1.Size = new System.Drawing.Size(445, 73);
             this.textBox1.TabIndex = 4;
             this.textBox1.WordWrap = false;
             // 

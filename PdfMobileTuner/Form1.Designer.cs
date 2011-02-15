@@ -31,6 +31,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.openDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,10 +48,18 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.bookPanel1 = new JpegBookMaker.BookPanel();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.analyzerPanel1 = new PdfAnalyzer.AnalyzerPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -86,6 +95,14 @@
             this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "PDFを開く(&O)";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Enabled = false;
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Text = "PDFで保存(&S)";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -168,6 +185,7 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripProgressBar1,
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel3,
             this.toolStripStatusLabel1});
@@ -207,30 +225,76 @@
             this.folderBrowserDialog1.Description = "JPEGフォルダを選択してください。";
             this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 24);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(552, 414);
+            this.tabControl1.TabIndex = 3;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.bookPanel1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 21);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(544, 389);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "ページ";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.analyzerPanel1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 21);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(544, 389);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "解析";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar1.Visible = false;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.Filter = "PDF ファイル (*.pdf)|*.pdf|すべてのファイル (*.*)|*.*";
+            // 
             // bookPanel1
             // 
             this.bookPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bookPanel1.Location = new System.Drawing.Point(0, 24);
+            this.bookPanel1.Location = new System.Drawing.Point(3, 3);
             this.bookPanel1.Name = "bookPanel1";
             this.bookPanel1.RightBinding = false;
-            this.bookPanel1.Size = new System.Drawing.Size(552, 414);
+            this.bookPanel1.Size = new System.Drawing.Size(538, 383);
             this.bookPanel1.TabIndex = 0;
             this.bookPanel1.BoxResize += new System.EventHandler(this.bookPanel1_BoxResize);
             this.bookPanel1.Resize += new System.EventHandler(this.bookPanel1_Resize);
             // 
-            // saveToolStripMenuItem
+            // analyzerPanel1
             // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveToolStripMenuItem.Text = "PDFで保存(&S)";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            this.analyzerPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.analyzerPanel1.Location = new System.Drawing.Point(3, 3);
+            this.analyzerPanel1.Name = "analyzerPanel1";
+            this.analyzerPanel1.Size = new System.Drawing.Size(538, 383);
+            this.analyzerPanel1.TabIndex = 0;
+            this.analyzerPanel1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.analyzerPanel1_ProgressChanged);
+            this.analyzerPanel1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.analyzerPanel1_RunWorkerCompleted);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(552, 460);
-            this.Controls.Add(this.bookPanel1);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -241,6 +305,9 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,6 +336,12 @@
         private System.Windows.Forms.ToolStripMenuItem openDirToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private PdfAnalyzer.AnalyzerPanel analyzerPanel1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 
