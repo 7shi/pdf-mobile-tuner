@@ -44,17 +44,18 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.bookPanel1 = new JpegBookMaker.BookPanel();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.analyzerPanel1 = new PdfAnalyzer.AnalyzerPanel();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -195,6 +196,12 @@
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar1.Visible = false;
+            // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
@@ -247,27 +254,6 @@
             this.tabPage1.Text = "ページ";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.analyzerPanel1);
-            this.tabPage2.Location = new System.Drawing.Point(4, 21);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(544, 389);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "解析";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
-            this.toolStripProgressBar1.Visible = false;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.Filter = "PDF ファイル (*.pdf)|*.pdf|すべてのファイル (*.*)|*.*";
-            // 
             // bookPanel1
             // 
             this.bookPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -279,6 +265,17 @@
             this.bookPanel1.BoxResize += new System.EventHandler(this.bookPanel1_BoxResize);
             this.bookPanel1.Resize += new System.EventHandler(this.bookPanel1_Resize);
             // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.analyzerPanel1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 21);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(544, 389);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "解析";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // analyzerPanel1
             // 
             this.analyzerPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -288,6 +285,14 @@
             this.analyzerPanel1.TabIndex = 0;
             this.analyzerPanel1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.analyzerPanel1_ProgressChanged);
             this.analyzerPanel1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.analyzerPanel1_RunWorkerCompleted);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.Filter = "PDF ファイル (*.pdf)|*.pdf|すべてのファイル (*.*)|*.*";
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.Filter = "PDF ファイル (*.pdf)|*.pdf|すべてのファイル (*.*)|*.*";
             // 
             // Form1
             // 
@@ -342,6 +347,7 @@
         private PdfAnalyzer.AnalyzerPanel analyzerPanel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 

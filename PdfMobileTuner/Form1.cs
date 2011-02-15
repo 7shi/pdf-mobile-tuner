@@ -41,6 +41,10 @@ namespace PdfMobileTuner
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (saveFileDialog1.ShowDialog(this) != DialogResult.OK) return;
+
+            saveDialog.PDF = saveFileDialog1.FileName;
+            saveDialog.ShowDialog(this);
         }
 
         private void openDirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -57,6 +61,7 @@ namespace PdfMobileTuner
 
         private void saveDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            saveDialog.PDF = null;
             saveDialog.ShowDialog(this);
         }
 

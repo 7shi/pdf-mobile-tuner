@@ -173,7 +173,7 @@ namespace JpegBookMaker
                     case ".tiff":
                         var fn = Path.GetFileName(file);
                         var fn2 = Path.GetFileNameWithoutExtension(file);
-                        var pi = new PageInfo(fn);
+                        var pi = new PageInfo(Path.Combine(imagePath, fn));
                         listView1.Items.Add(new ListViewItem(fn2) { Tag = pi, Checked = true });
                         break;
                 }
@@ -276,9 +276,9 @@ namespace JpegBookMaker
             panel1.Bitmap = panel2.Bitmap = null;
             Bitmap bmp1 = null, bmp2 = null;
             if (li1 != null && li1.Tag is PageInfo)
-                bmp1 = (li1.Tag as PageInfo).GetBitmap(imagePath);
+                bmp1 = (li1.Tag as PageInfo).GetBitmap();
             if (li2 != null && li2.Tag is PageInfo)
-                bmp2 = (li2.Tag as PageInfo).GetBitmap(imagePath);
+                bmp2 = (li2.Tag as PageInfo).GetBitmap();
             panel1.Bitmap = bmp1;
             panel2.Bitmap = bmp2;
             if (common.Bounds.IsEmpty) setBoxes();
@@ -650,10 +650,165 @@ namespace JpegBookMaker
 
         public void Save(BackgroundWorker bw, int ow, int oh, bool r)
         {
-            var dir = imagePath;
-            var outdir = Path.Combine(dir, "output");
+            var outdir = Path.Combine(imagePath, "output");
             if (!Directory.Exists(outdir))
                 Directory.CreateDirectory(outdir);
+            int no = 1;
+            getEachBitmap(bw, ow, oh, r, bmp =>
+            {
+                var jpg = Path.Combine(outdir, string.Format("{0:0000}.jpg", no++));
+                bmp.Save(jpg, ImageFormat.Jpeg);
+            });
+        }
+
+        public void Save(BackgroundWorker bw, int ow, int oh, bool r, string pdf)
+        {
+            if (pdf == null)
+            {
+                Save(bw, ow, oh, r);
+                return;
+            }
+            using (var fs = new FileStream(pdf, FileMode.Create))
+            using (var sw = new StreamWriter(fs) { AutoFlush = true })
+            {
+                var objp = new List<long>();
+                var sizes = new Size[countBitmap()];
+                var no_r = 2 + sizes.Length;
+
+                sw.WriteLine("%PDF-1.2");
+
+                sw.WriteLine();
+                objp.Add(fs.Position);
+                sw.WriteLine("1 0 obj");
+                sw.WriteLine("<<");
+                sw.WriteLine("  /Type /Catalog /Pages {0} 0 R", no_r);
+                if (r)
+                    sw.WriteLine("  /Rotate 90");
+                if (rightBinding)
+                    sw.WriteLine("  /ViewerPreferences << /Direction /R2L >>");
+                sw.WriteLine(">>");
+                sw.WriteLine("endobj");
+
+                int n = 0;
+                getEachBitmap(bw, ow, oh, r, bmp =>
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        var name = "/Jpeg" + (n + 1);
+                        var sz = sizes[n] = bmp.Size;
+                        bmp.Save(ms, ImageFormat.Jpeg);
+                        ms.Close();
+                        var buf = ms.ToArray();
+
+                        sw.WriteLine();
+                        objp.Add(fs.Position);
+                        sw.WriteLine("{0} 0 obj", 2 + n);
+                        sw.WriteLine("<<");
+                        sw.WriteLine("  /Type /XObject /Subtype /Image /Name {0}", name);
+                        sw.WriteLine("  /Filter /DCTDecode /BitsPerComponent 8 /ColorSpace /DeviceRGB");
+                        sw.WriteLine("  /Width {0} /Height {1} /Length {2}", sz.Width, sz.Height, buf.Length);
+                        sw.WriteLine(">>");
+                        sw.WriteLine("stream");
+                        fs.Write(buf, 0, buf.Length);
+                        sw.WriteLine();
+                        sw.WriteLine("endstream");
+                        sw.WriteLine("endobj");
+                    }
+                });
+
+                sw.WriteLine();
+                objp.Add(fs.Position);
+                sw.WriteLine("{0} 0 obj", no_r);
+                sw.WriteLine("<<");
+                sw.WriteLine("  /Type /Pages /Count {0}", sizes.Length);
+                sw.WriteLine("  /Kids");
+                sw.Write("  [");
+                for (int i = 0; i < sizes.Length; i++)
+                {
+                    if ((i & 7) == 0)
+                    {
+                        sw.WriteLine();
+                        sw.Write("   ");
+                    }
+                    sw.Write(" {0} 0 R", no_r + 1 + i * 2);
+                }
+                sw.WriteLine();
+                sw.WriteLine("  ]");
+                sw.WriteLine(">>");
+                sw.WriteLine("endobj");
+
+                for (int i = 0; i < sizes.Length; i++)
+                {
+                    var no_p = no_r + 1 + i * 2;
+                    var no_c = no_p + 1;
+                    var name = "/Jpeg" + (i + 1);
+                    var sz = sizes[i];
+
+                    sw.WriteLine();
+                    objp.Add(fs.Position);
+                    sw.WriteLine("{0} 0 obj", no_p);
+                    sw.WriteLine("<<");
+                    sw.WriteLine("  /Type /Page /Parent 2 0 R /Contents {0} 0 R", no_c);
+                    sw.WriteLine("  /MediaBox [ 0 0 {0} {1} ]", sz.Width, sz.Height);
+                    if (sz.Width > sz.Height) sw.WriteLine("  /Rotate 90");
+                    sw.WriteLine("  /Resources");
+                    sw.WriteLine("  <<");
+                    sw.WriteLine("    /ProcSet [ /PDF /ImageB /ImageC /ImageI ]");
+                    sw.WriteLine("    /XObject << {0} {1} 0 R >>", name, 2 + i);
+                    sw.WriteLine("  >>");
+                    sw.WriteLine(">>");
+                    sw.WriteLine("endobj");
+
+                    sw.WriteLine();
+                    objp.Add(fs.Position);
+                    sw.WriteLine("{0} 0 obj", no_c);
+                    var st4 = string.Format("q {0} 0 0 {1} 0 0 cm {2} Do Q",
+                        sz.Width, sz.Height, name);
+                    sw.WriteLine("<< /Length {0} >>", st4.Length);
+                    sw.WriteLine("stream");
+                    sw.WriteLine(st4);
+                    sw.WriteLine("endstream");
+                    sw.WriteLine("endobj");
+                }
+
+                sw.WriteLine();
+                var xref = fs.Position;
+                sw.WriteLine("xref");
+                var size = objp.Count + 1;
+                sw.WriteLine("0 {0}", size);
+                sw.WriteLine("{0:0000000000} {1:00000} f", 0, 65535);
+                foreach (var p in objp)
+                    sw.WriteLine("{0:0000000000} {1:00000} n", p, 0);
+                sw.WriteLine("trailer");
+                sw.WriteLine("<< /Root 1 0 R /Size {0} >>", size);
+                sw.WriteLine("startxref");
+                sw.WriteLine("{0}", xref);
+                sw.WriteLine("%%EOF");
+            }
+        }
+
+        private int countBitmap()
+        {
+            int ret = 0;
+            int count = 0;
+            Invoke(new Action(() =>
+            {
+                count = listView1.Items.Count;
+            }));
+            for (int i = 0; i < count; i++)
+            {
+                PageInfo lpi = null;
+                Invoke(new Action(() =>
+                {
+                    lpi = listView1.Items[i].Tag as PageInfo;
+                }));
+                if (lpi != null) ret++;
+            }
+            return ret;
+        }
+
+        private void getEachBitmap(BackgroundWorker bw, int ow, int oh, bool r, Action<Bitmap> delg)
+        {
             int count = 0;
             Invoke(new Action(() =>
             {
@@ -665,7 +820,7 @@ namespace JpegBookMaker
                 boxes = new[] { panel1.BoxBounds, panel2.BoxBounds };
             else
                 boxes = new[] { panel2.BoxBounds, panel1.BoxBounds };
-            for (int i = 0, no = 1; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 if (bw.CancellationPending) break;
                 int pp = i * 100 / count;
@@ -683,9 +838,8 @@ namespace JpegBookMaker
                     pi = getInfo(li);
                     lpi = li.Tag as PageInfo;
                 }));
-                if (pi == null || lpi == null) continue;
-                if (src == null)
-                    src = lpi.GetBitmap(imagePath);
+                if (lpi == null) continue;
+                if (src == null) src = lpi.GetBitmap();
                 Utils.AdjustLevels(src, pi.IsGrayScale ? pi.Level : 5);
                 var box = boxes[i & 1];
                 using (var bmp = GetBitmap(src, box, ow, oh))
@@ -693,8 +847,7 @@ namespace JpegBookMaker
                     Utils.AdjustContrast(bmp, pi.IsGrayScale ? pi.Contrast * 16 : 128);
                     if (pi.IsGrayScale) Utils.GrayScale(bmp);
                     if (r) bmp.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    var jpg = Path.Combine(outdir, string.Format("{0:0000}.jpg", no++));
-                    bmp.Save(jpg, ImageFormat.Jpeg);
+                    delg(bmp);
                 }
                 src.Dispose();
             }

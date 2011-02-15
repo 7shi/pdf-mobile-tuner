@@ -28,10 +28,10 @@ namespace JpegBookMaker
             Page = page;
         }
 
-        public Bitmap GetBitmap(string imgPath)
+        public Bitmap GetBitmap()
         {
             if (Path != null)
-                return new Bitmap(System.IO.Path.Combine(imgPath, Path));
+                return new Bitmap(Path);
             else if (Page != null)
                 return new Bitmap(GetImage(Page).GetStream());
             else

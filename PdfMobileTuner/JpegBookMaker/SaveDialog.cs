@@ -13,6 +13,7 @@ namespace JpegBookMaker
     public partial class SaveDialog : Form
     {
         public BookPanel BookPanel { get; set; }
+        public string PDF { get; set; }
 
         public SaveDialog()
         {
@@ -61,7 +62,7 @@ namespace JpegBookMaker
                 h = checkBox2.Checked ? (int)numericUpDown2.Value : 0;
                 r = checkBox3.Checked;
             }));
-            BookPanel.Save(backgroundWorker1, w, h, r);
+            BookPanel.Save(backgroundWorker1, w, h, r, PDF);
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
