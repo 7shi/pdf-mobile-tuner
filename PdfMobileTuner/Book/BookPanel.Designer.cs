@@ -1,4 +1,4 @@
-﻿namespace PdfMobileTuner
+﻿namespace JpegBookMaker
 {
     partial class BookPanel
     {
