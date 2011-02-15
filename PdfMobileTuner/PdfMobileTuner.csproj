@@ -43,16 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BookPanel.cs">
+    <Compile Include="Book\BookPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BookPanel.Designer.cs">
+    <Compile Include="Book\BookPanel.Designer.cs">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="BookPanelHelp.cs">
+    <Compile Include="Book\BookPanelHelp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BookPanelHelp.Designer.cs">
+    <Compile Include="Book\BookPanelHelp.Designer.cs">
       <DependentUpon>BookPanelHelp.cs</DependentUpon>
     </Compile>
     <Compile Include="CommonLib\MouseWheelMessageFilter.cs" />
@@ -66,20 +66,20 @@
     <Compile Include="CommonLib\PicturePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PageInfo.cs" />
+    <Compile Include="Book\PageInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonLib\Utils.cs" />
-    <Compile Include="SaveDialog.cs">
+    <Compile Include="Book\SaveDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SaveDialog.Designer.cs">
+    <Compile Include="Book\SaveDialog.Designer.cs">
       <DependentUpon>SaveDialog.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="BookPanel.resx">
+    <EmbeddedResource Include="Book\BookPanel.resx">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BookPanelHelp.resx">
+    <EmbeddedResource Include="Book\BookPanelHelp.resx">
       <DependentUpon>BookPanelHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
@@ -95,7 +95,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SaveDialog.resx">
+    <EmbeddedResource Include="Book\SaveDialog.resx">
       <DependentUpon>SaveDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
