@@ -8,8 +8,8 @@
     <ProjectGuid>{19E9AF7E-26BF-476C-8486-5E22A824C081}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JpegBookMaker</RootNamespace>
-    <AssemblyName>JpegBookMaker</AssemblyName>
+    <RootNamespace>PdfMobileTuner</RootNamespace>
+    <AssemblyName>PdfMobileTuner</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

@@ -10,7 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using CommonLib;
 
-namespace JpegBookMaker
+namespace PdfMobileTuner
 {
     public partial class BookPanel : UserControl
     {

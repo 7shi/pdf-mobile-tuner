@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CommonLib;
 
-namespace JpegBookMaker
+namespace PdfMobileTuner
 {
     static class Program
     {

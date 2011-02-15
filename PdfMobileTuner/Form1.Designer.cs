@@ -1,4 +1,4 @@
-﻿namespace JpegBookMaker
+﻿namespace PdfMobileTuner
 {
     partial class Form1
     {
@@ -45,7 +45,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.bookPanel1 = new JpegBookMaker.BookPanel();
+            this.bookPanel1 = new PdfMobileTuner.BookPanel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();

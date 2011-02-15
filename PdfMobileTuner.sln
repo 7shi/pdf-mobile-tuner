@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JpegBookMaker", "JpegBookMaker\JpegBookMaker.csproj", "{19E9AF7E-26BF-476C-8486-5E22A824C081}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfMobileTuner", "PdfMobileTuner\PdfMobileTuner.csproj", "{19E9AF7E-26BF-476C-8486-5E22A824C081}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

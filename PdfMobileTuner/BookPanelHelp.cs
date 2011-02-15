@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace JpegBookMaker
+namespace PdfMobileTuner
 {
     public partial class BookPanelHelp : Form
     {
