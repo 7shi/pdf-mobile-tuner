@@ -25,12 +25,15 @@ namespace PdfMobileTuner
 #endif
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close();
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void openDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog(this) != DialogResult.OK) return;
 
@@ -38,12 +41,17 @@ namespace PdfMobileTuner
             toolStripStatusLabel1.Text = path;
             bookPanel1.Open(path);
             rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
-            saveToolStripMenuItem.Enabled = true;
+            saveDirToolStripMenuItem.Enabled = true;
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveDialog.ShowDialog(this);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
         private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)

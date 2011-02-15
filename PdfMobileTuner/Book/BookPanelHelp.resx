@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="textBox1.Text" xml:space="preserve">
-    <value>    JPEG化した本のデータを最適化する手順
+    <value>    スキャンした本のデータを最適化する手順
 
 ページリストのチェックは設定が共通かどうかを示す。
 チェックを外すと個別設定となる。
 
-1. JPEGのあるディレクトリを開く。
+1. PDFファイルを開く。
    縦書きの本は「表示→右綴じ」を指定する。
 2. リストでいらないページを右クリックして削除する。
 3. 本文の切り抜き範囲を指定する。
