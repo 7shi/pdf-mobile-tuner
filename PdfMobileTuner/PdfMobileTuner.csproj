@@ -43,16 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Book\BookPanel.cs">
+    <Compile Include="JpegBookMaker\BookPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Book\BookPanel.Designer.cs">
+    <Compile Include="JpegBookMaker\BookPanel.Designer.cs">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Book\BookPanelHelp.cs">
+    <Compile Include="JpegBookMaker\BookPanelHelp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Book\BookPanelHelp.Designer.cs">
+    <Compile Include="JpegBookMaker\BookPanelHelp.Designer.cs">
       <DependentUpon>BookPanelHelp.cs</DependentUpon>
     </Compile>
     <Compile Include="CommonLib\MouseWheelMessageFilter.cs" />
@@ -66,7 +66,7 @@
     <Compile Include="CommonLib\PicturePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Book\PageInfo.cs" />
+    <Compile Include="JpegBookMaker\PageInfo.cs" />
     <Compile Include="PdfLib\PdfDeflateStream.cs" />
     <Compile Include="PdfLib\PdfDocument.cs" />
     <Compile Include="PdfLib\PdfLexer.cs" />
@@ -76,16 +76,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CommonLib\Utils.cs" />
-    <Compile Include="Book\SaveDialog.cs">
+    <Compile Include="JpegBookMaker\SaveDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Book\SaveDialog.Designer.cs">
+    <Compile Include="JpegBookMaker\SaveDialog.Designer.cs">
       <DependentUpon>SaveDialog.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Book\BookPanel.resx">
+    <EmbeddedResource Include="JpegBookMaker\BookPanel.resx">
       <DependentUpon>BookPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Book\BookPanelHelp.resx">
+    <EmbeddedResource Include="JpegBookMaker\BookPanelHelp.resx">
       <DependentUpon>BookPanelHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
@@ -101,7 +101,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Book\SaveDialog.resx">
+    <EmbeddedResource Include="JpegBookMaker\SaveDialog.resx">
       <DependentUpon>SaveDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
