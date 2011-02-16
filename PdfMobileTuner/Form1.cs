@@ -22,7 +22,9 @@ namespace PdfMobileTuner
             InitializeComponent();
             saveDialog.BookPanel = bookPanel1;
 #if DEBUG
-            folderBrowserDialog1.SelectedPath = @"E:\temp";
+            const string dir = @"D:\pdf2jpeg";
+            if (Directory.Exists(dir))
+                folderBrowserDialog1.SelectedPath = dir;
 #endif
         }
 

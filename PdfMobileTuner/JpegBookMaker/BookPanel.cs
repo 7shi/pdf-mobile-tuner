@@ -259,7 +259,7 @@ namespace JpegBookMaker
                 panel2.Selected = li == li2;
                 stop = stp;
             }
-            OnResize(EventArgs.Empty);
+            OnBoxResize(EventArgs.Empty);
         }
 
         private void SetBitmap(ListViewItem li1, ListViewItem li2)
@@ -576,54 +576,56 @@ namespace JpegBookMaker
 
         private void panel1_BoxResize(object sender, EventArgs e)
         {
-            if (ignore) return;
-
-            var li = panel1.Tag as ListViewItem;
-            if (li == null) return;
-
-            var bmp = panel2.Bitmap;
-            if (bmp == null) return;
-
-            var r1 = panel1.BoxBounds;
-            if (li.Checked)
-            {
-                var r2 = mirror(r1, bmp);
-                common.Bounds = rightBinding ? r2 : r1;
-                ignore = true;
-                panel2.BoxBounds = r2;
-                ignore = false;
-            }
-            else
-                (li.Tag as PageInfo).Bounds = r1;
-            panel1.Refresh();
-            panel2.Refresh();
-            OnResize(EventArgs.Empty);
+            doBoxResize(panel1);
         }
 
         private void panel2_BoxResize(object sender, EventArgs e)
         {
+            doBoxResize(panel2);
+        }
+
+        private void doBoxResize(PicturePanel p1)
+        {
             if (ignore) return;
 
-            var li = panel2.Tag as ListViewItem;
-            if (li == null) return;
-
-            var bmp = panel1.Bitmap;
-            if (bmp == null) return;
-
-            var r2 = panel2.BoxBounds;
-            if (li.Checked)
+            PicturePanel p2;
+            bool isLeft;
+            if (p1 == panel1)
             {
-                var r1 = mirror(r2, bmp);
-                common.Bounds = rightBinding ? r2 : r1;
+                p2 = panel2;
+                isLeft = !rightBinding;
+            }
+            else
+            {
+                p2 = panel1;
+                isLeft = rightBinding;
+            }
+            var li1 = p1.Tag as ListViewItem;
+            var li2 = p2.Tag as ListViewItem;
+            if (li1 == null || p1.Bitmap == null) return;
+
+            var flg = li2 != null && li2.Checked && p2.Bitmap != null;
+            var r1 = p1.BoxBounds;
+            if (li1.Checked)
+            {
                 ignore = true;
-                panel1.BoxBounds = r1;
+                if (isLeft)
+                {
+                    common.Bounds = r1;
+                    if (flg) p2.BoxBounds = mirror(r1, p2.Bitmap);
+                }
+                else
+                {
+                    common.Bounds = mirror(r1, p1.Bitmap);
+                    if (flg) p2.BoxBounds = common.Bounds;
+                }
                 ignore = false;
             }
             else
-                (li.Tag as PageInfo).Bounds = r2;
-            panel1.Refresh();
-            panel2.Refresh();
-            OnResize(EventArgs.Empty);
+                (li1.Tag as PageInfo).Bounds = r1;
+            p1.Refresh();
+            p2.Refresh();
+            OnBoxResize(EventArgs.Empty);
         }
 
         public PicturePanel SelectedPanel
