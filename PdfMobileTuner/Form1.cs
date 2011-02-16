@@ -34,6 +34,7 @@ namespace PdfMobileTuner
 
             bookPanel1.CloseDir();
             var pdf = openFileDialog1.FileName;
+            saveFileDialog1.FileName = Path.GetFileNameWithoutExtension(pdf) + "-m.pdf";
             toolStripStatusLabel1.Text = Path.GetFileNameWithoutExtension(pdf);
             toolStripProgressBar1.Value = 0;
             toolStripProgressBar1.Visible = true;
@@ -56,6 +57,7 @@ namespace PdfMobileTuner
             analyzerPanel1.ClosePDF();
             var path = folderBrowserDialog1.SelectedPath;
             toolStripStatusLabel1.Text = path;
+            saveFileDialog1.FileName = path + ".pdf";
             bookPanel1.OpenDir(path);
             rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
             saveToolStripMenuItem.Enabled = saveDirToolStripMenuItem.Enabled = true;

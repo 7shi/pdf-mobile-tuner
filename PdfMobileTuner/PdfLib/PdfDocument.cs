@@ -11,6 +11,7 @@ namespace PdfLib
         private Action<int> progress;
 
         public PdfParser Parser { get; private set; }
+        public bool RightBinding { get; private set; }
 
         public PdfDocument(string pdf, Action<int> progress = null)
         {
@@ -39,6 +40,9 @@ namespace PdfLib
             if (root == null)
                 throw new Exception("not found: /Root");
             root.Read(parser);
+            var vpref = root.GetObject("/ViewerPreferences");
+            if (vpref != null && vpref.GetText("/Direction") == "/R2L")
+                RightBinding = true;
 
             var pages = root.GetObject("/Pages");
             if (pages == null)

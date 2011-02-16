@@ -24,11 +24,7 @@ namespace JpegBookMaker
                 if (rightBinding == value) return;
                 rightBinding = value;
                 adjustPanel();
-                var r = panel1.BoxBounds;
-                ignore = true;
-                panel1.BoxBounds = panel2.BoxBounds;
-                panel2.BoxBounds = r;
-                ignore = false;
+                setBoxBounds();
             }
         }
 
@@ -123,6 +119,8 @@ namespace JpegBookMaker
         {
             CloseDir();
             this.doc = doc;
+            rightBinding = doc.RightBinding;
+            adjustPanel();
 
             stop = true;
             listView1.BeginUpdate();
@@ -153,6 +151,7 @@ namespace JpegBookMaker
         public void OpenDir(string path)
         {
             CloseDir();
+            adjustPanel();
             imagePath = path;
 
             stop = true;
@@ -173,7 +172,7 @@ namespace JpegBookMaker
                     case ".tiff":
                         var fn = Path.GetFileName(file);
                         var fn2 = Path.GetFileNameWithoutExtension(file);
-                        var pi = new PageInfo(Path.Combine(imagePath, fn));
+                        var pi = new PageInfo(Path.Combine(path, fn));
                         listView1.Items.Add(new ListViewItem(fn2) { Tag = pi, Checked = true });
                         break;
                 }
@@ -282,21 +281,18 @@ namespace JpegBookMaker
             panel1.Bitmap = bmp1;
             panel2.Bitmap = bmp2;
             if (common.Bounds.IsEmpty) setBoxes();
-            ignore = true;
-            panel1.BoxBounds = getBounds(panel1);
-            panel2.BoxBounds = getBounds(panel2);
-            ignore = false;
+            setBoxBounds();
             setState();
 
             Cursor.Current = cur;
         }
 
-        private Rectangle mirror(Rectangle r, Bitmap bmp)
+        private void setBoxBounds()
         {
-            if (bmp == null)
-                return Rectangle.Empty;
-            else
-                return new Rectangle(bmp.Width - r.Right, r.Y, r.Width, r.Height);
+            ignore = true;
+            panel1.BoxBounds = getBounds(panel1);
+            panel2.BoxBounds = getBounds(panel2);
+            ignore = false;
         }
 
         private Rectangle getBounds(PicturePanel pp)
@@ -316,6 +312,14 @@ namespace JpegBookMaker
                 var pi = li.Tag as PageInfo;
                 return pi != null ? pi.Bounds : Rectangle.Empty;
             }
+        }
+
+        private Rectangle mirror(Rectangle r, Bitmap bmp)
+        {
+            if (bmp == null)
+                return Rectangle.Empty;
+            else
+                return new Rectangle(bmp.Width - r.Right, r.Y, r.Width, r.Height);
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -588,18 +592,8 @@ namespace JpegBookMaker
         {
             if (ignore) return;
 
-            PicturePanel p2;
-            bool isLeft;
-            if (p1 == panel1)
-            {
-                p2 = panel2;
-                isLeft = !rightBinding;
-            }
-            else
-            {
-                p2 = panel1;
-                isLeft = rightBinding;
-            }
+            var isLeft = isLeftPanel(p1);
+            var p2 = p1 == panel1 ? panel2 : panel1;
             var li1 = p1.Tag as ListViewItem;
             var li2 = p2.Tag as ListViewItem;
             if (li1 == null || p1.Bitmap == null) return;
@@ -626,6 +620,17 @@ namespace JpegBookMaker
             p1.Refresh();
             p2.Refresh();
             OnBoxResize(EventArgs.Empty);
+        }
+
+        private bool isLeftPanel(PicturePanel pp)
+        {
+            return pp == panel1 ? !rightBinding : rightBinding;
+        }
+
+        private bool isLeftPage(int index)
+        {
+            int i1 = index & 1;
+            return rightBinding ? i1 == 1 : i1 == 0;
         }
 
         public PicturePanel SelectedPanel
@@ -681,11 +686,9 @@ namespace JpegBookMaker
 
                 sw.WriteLine();
                 objp.Add(fs.Position);
-                sw.WriteLine("1 0 obj");
+                sw.WriteLine("{0} 0 obj", objp.Count);
                 sw.WriteLine("<<");
                 sw.WriteLine("  /Type /Catalog /Pages {0} 0 R", no_r);
-                if (r)
-                    sw.WriteLine("  /Rotate 90");
                 if (rightBinding)
                     sw.WriteLine("  /ViewerPreferences << /Direction /R2L >>");
                 sw.WriteLine(">>");
@@ -696,15 +699,15 @@ namespace JpegBookMaker
                 {
                     using (var ms = new MemoryStream())
                     {
-                        var name = "/Jpeg" + (n + 1);
-                        var sz = sizes[n] = bmp.Size;
+                        var sz = sizes[n++] = bmp.Size;
+                        var name = "/Jpeg" + n;
                         bmp.Save(ms, ImageFormat.Jpeg);
                         ms.Close();
                         var buf = ms.ToArray();
 
                         sw.WriteLine();
                         objp.Add(fs.Position);
-                        sw.WriteLine("{0} 0 obj", 2 + n);
+                        sw.WriteLine("{0} 0 obj", objp.Count);
                         sw.WriteLine("<<");
                         sw.WriteLine("  /Type /XObject /Subtype /Image /Name {0}", name);
                         sw.WriteLine("  /Filter /DCTDecode /BitsPerComponent 8 /ColorSpace /DeviceRGB");
@@ -717,12 +720,15 @@ namespace JpegBookMaker
                         sw.WriteLine("endobj");
                     }
                 });
+                bw.ReportProgress(100);
 
                 sw.WriteLine();
                 objp.Add(fs.Position);
-                sw.WriteLine("{0} 0 obj", no_r);
+                sw.WriteLine("{0} 0 obj", objp.Count);
                 sw.WriteLine("<<");
                 sw.WriteLine("  /Type /Pages /Count {0}", sizes.Length);
+                if (r)
+                    sw.WriteLine("  /Rotate 90");
                 sw.WriteLine("  /Kids");
                 sw.Write("  [");
                 for (int i = 0; i < sizes.Length; i++)
@@ -741,18 +747,15 @@ namespace JpegBookMaker
 
                 for (int i = 0; i < sizes.Length; i++)
                 {
-                    var no_p = no_r + 1 + i * 2;
-                    var no_c = no_p + 1;
                     var name = "/Jpeg" + (i + 1);
                     var sz = sizes[i];
 
                     sw.WriteLine();
                     objp.Add(fs.Position);
-                    sw.WriteLine("{0} 0 obj", no_p);
+                    sw.WriteLine("{0} 0 obj", objp.Count);
                     sw.WriteLine("<<");
-                    sw.WriteLine("  /Type /Page /Parent 2 0 R /Contents {0} 0 R", no_c);
+                    sw.WriteLine("  /Type /Page /Parent {0} 0 R /Contents {1} 0 R", no_r, objp.Count + 1);
                     sw.WriteLine("  /MediaBox [ 0 0 {0} {1} ]", sz.Width, sz.Height);
-                    if (sz.Width > sz.Height) sw.WriteLine("  /Rotate 90");
                     sw.WriteLine("  /Resources");
                     sw.WriteLine("  <<");
                     sw.WriteLine("    /ProcSet [ /PDF /ImageB /ImageC /ImageI ]");
@@ -763,7 +766,7 @@ namespace JpegBookMaker
 
                     sw.WriteLine();
                     objp.Add(fs.Position);
-                    sw.WriteLine("{0} 0 obj", no_c);
+                    sw.WriteLine("{0} 0 obj", objp.Count);
                     var st4 = string.Format("q {0} 0 0 {1} 0 0 cm {2} Do Q",
                         sz.Width, sz.Height, name);
                     sw.WriteLine("<< /Length {0} >>", st4.Length);
@@ -817,11 +820,6 @@ namespace JpegBookMaker
                 count = listView1.Items.Count;
             }));
             int p = 0;
-            Rectangle[] boxes;
-            if (panel1.Left < panel2.Left)
-                boxes = new[] { panel1.BoxBounds, panel2.BoxBounds };
-            else
-                boxes = new[] { panel2.BoxBounds, panel1.BoxBounds };
             for (int i = 0; i < count; i++)
             {
                 if (bw.CancellationPending) break;
@@ -833,9 +831,9 @@ namespace JpegBookMaker
                 Invoke(new Action(() =>
                 {
                     var li = listView1.Items[i];
-                    if (li == panel1.Tag)
+                    if (li == panel1.Tag && panel1.Bitmap != null)
                         src = new Bitmap(panel1.Bitmap);
-                    else if (li == panel2.Tag)
+                    else if (li == panel2.Tag && panel2.Bitmap != null)
                         src = new Bitmap(panel2.Bitmap);
                     pi = getInfo(li);
                     lpi = li.Tag as PageInfo;
@@ -843,7 +841,7 @@ namespace JpegBookMaker
                 if (lpi == null) continue;
                 if (src == null) src = lpi.GetBitmap();
                 Utils.AdjustLevels(src, pi.IsGrayScale ? pi.Level : 5);
-                var box = boxes[i & 1];
+                var box = pi == common && !isLeftPage(i) ? mirror(pi.Bounds, src) : pi.Bounds;
                 using (var bmp = GetBitmap(src, box, ow, oh))
                 {
                     Utils.AdjustContrast(bmp, pi.IsGrayScale ? pi.Contrast * 16 : 128);
