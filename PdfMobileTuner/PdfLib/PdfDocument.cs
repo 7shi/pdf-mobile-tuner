@@ -10,11 +10,13 @@ namespace PdfLib
         private List<PdfObject> pages = new List<PdfObject>();
         private Action<int> progress;
 
+        public string FullName { get; private set; }
         public PdfParser Parser { get; private set; }
         public bool RightBinding { get; private set; }
 
         public PdfDocument(string pdf, Action<int> progress = null)
         {
+            FullName = pdf;
             this.progress = progress;
             var fs = new FileStream(pdf, FileMode.Open);
             var parser = new PdfParser(this, fs);

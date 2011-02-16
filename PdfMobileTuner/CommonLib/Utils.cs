@@ -165,6 +165,34 @@ namespace CommonLib
             Marshal.Copy(buf, 0, data.Scan0, buf.Length);
             bmp.UnlockBits(data);
         }
+
+        public static string URLEncode(string text)
+        {
+            var sb = new StringBuilder();
+            foreach (char ch in Encoding.UTF8.GetBytes(text))
+            {
+                if (ch < 128 && char.IsLetterOrDigit(ch))
+                    sb.Append(ch);
+                else
+                {
+                    switch (ch)
+                    {
+                        case ' ':
+                            sb.Append('+');
+                            break;
+                        case '-':
+                        case '_':
+                        case '.':
+                            sb.Append(ch);
+                            break;
+                        default:
+                            sb.Append(string.Format("%{0:X2}", (int)ch));
+                            break;
+                    }
+                }
+            }
+            return sb.ToString();
+        }
     }
 
     public delegate void Action();

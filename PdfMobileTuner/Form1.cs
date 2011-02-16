@@ -93,13 +93,18 @@ namespace PdfMobileTuner
 
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            showHelp();
+        }
+
+        private void showHelp()
+        {
             if (help == null)
             {
                 help = new BookPanelHelp();
                 help.Owner = this;
-                var cs = ClientSize;
-                help.Location = PointToScreen(new Point(cs.Width - help.Width, 0));
             }
+            var cs = ClientSize;
+            help.Location = PointToScreen(new Point(cs.Width - help.Width, 0));
             help.Show();
         }
 
@@ -142,6 +147,12 @@ namespace PdfMobileTuner
             bookPanel1.OpenPDF(analyzerPanel1.Document);
             rightBindingToolStripMenuItem.Checked = bookPanel1.RightBinding;
             saveToolStripMenuItem.Enabled = saveDirToolStripMenuItem.Enabled = true;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            showHelp();
         }
 
         protected override void OnClosing(CancelEventArgs e)

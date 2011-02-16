@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using PdfLib;
 
@@ -56,6 +57,17 @@ namespace JpegBookMaker
                 }
             }
             return null;
+        }
+
+        public void WriteSaveInfo(TextWriter tw)
+        {
+            tw.WriteLine("X={0}", Bounds.X);
+            tw.WriteLine("Y={0}", Bounds.Y);
+            tw.WriteLine("Width={0}", Bounds.Width);
+            tw.WriteLine("Height={0}", Bounds.Height);
+            tw.WriteLine("Level={0}", Level);
+            tw.WriteLine("Contrast={0}", Contrast);
+            tw.WriteLine("IsGrayScale={0}", IsGrayScale ? 1 : 0);
         }
     }
 }

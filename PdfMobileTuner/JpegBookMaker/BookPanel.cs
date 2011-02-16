@@ -121,6 +121,7 @@ namespace JpegBookMaker
             this.doc = doc;
             rightBinding = doc.RightBinding;
             adjustPanel();
+            imagePath = Path.GetDirectoryName(doc.FullName);
 
             stop = true;
             listView1.BeginUpdate();
@@ -197,6 +198,7 @@ namespace JpegBookMaker
             common.Level = defaultLevel;
             common.Contrast = defaultContrast;
             common.Bounds = Rectangle.Empty;
+            common.IsGrayScale = false;
             trackBar1.Value = defaultLevel;
             trackBar2.Value = defaultContrast;
             checkBox1.Enabled = false;
@@ -311,7 +313,13 @@ namespace JpegBookMaker
             else
             {
                 var pi = li.Tag as PageInfo;
-                return pi != null ? pi.Bounds : Rectangle.Empty;
+                if (pi == null) return Rectangle.Empty;
+                if (pi.Bounds.X < 0)
+                {
+                    if (pp.Bitmap == null) return Rectangle.Empty;
+                    pi.Bounds.X = pp.Bitmap.Width + pi.Bounds.X - pi.Bounds.Width;
+                }
+                return pi.Bounds;
             }
         }
 
@@ -345,6 +353,17 @@ namespace JpegBookMaker
         private void listView1_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (stop || e.Item.Tag == null) return;
+
+            if (!e.Item.Checked)
+            {
+                var pi = e.Item.Tag as PageInfo;
+                pi.Bounds = common.Bounds;
+                if (!isLeftPage(e.Item.Index)) pi.Bounds.X = -pi.Bounds.X;
+                pi.Level = trackBar1.Value;
+                pi.Contrast = trackBar2.Value;
+                pi.IsGrayScale = checkBox1.Checked;
+            }
+
             PicturePanel pp;
             if (e.Item == panel1.Tag)
                 pp = panel1;
@@ -352,14 +371,6 @@ namespace JpegBookMaker
                 pp = panel2;
             else
                 return;
-            if (!e.Item.Checked)
-            {
-                var pi = e.Item.Tag as PageInfo;
-                pi.Bounds = common.Bounds;
-                pi.Level = trackBar1.Value;
-                pi.Contrast = trackBar2.Value;
-                pi.IsGrayScale = checkBox1.Checked;
-            }
             setControls();
             ignore = true;
             pp.BoxBounds = getBounds(pp);
@@ -680,8 +691,11 @@ namespace JpegBookMaker
             using (var sw = new StreamWriter(fs) { AutoFlush = true })
             {
                 var objp = new List<long>();
-                var sizes = new Size[countBitmap()];
-                var no_r = 2 + sizes.Length;
+                var si = new StringWriter();
+                var count = writeSaveInfo(si);
+                si.Close();
+                var sizes = new Size[count];
+                var no_p = 3 + count;
 
                 sw.WriteLine("%PDF-1.2");
 
@@ -689,12 +703,22 @@ namespace JpegBookMaker
                 objp.Add(fs.Position);
                 sw.WriteLine("{0} 0 obj", objp.Count);
                 sw.WriteLine("<<");
-                sw.WriteLine("  /Type /Catalog /Pages {0} 0 R", no_r);
+                sw.WriteLine("  /Type /Catalog /Pages {0} 0 R", no_p);
                 if (rightBinding)
                     sw.WriteLine("  /ViewerPreferences << /Direction /R2L >>");
                 sw.WriteLine(">>");
                 sw.WriteLine("endobj");
 
+                sw.WriteLine();
+                objp.Add(fs.Position);
+                sw.WriteLine("{0} 0 obj", objp.Count);
+                var ssi = si.ToString();
+                sw.WriteLine("<< /Type /SaveInfo /Length {0} >>", ssi.Length);
+                sw.WriteLine("stream");
+                sw.Write(ssi);
+                sw.WriteLine("endstream");
+
+                var no_j = objp.Count + 1;
                 int n = 0;
                 getEachBitmap(bw, ow, oh, r, bmp =>
                 {
@@ -727,26 +751,26 @@ namespace JpegBookMaker
                 objp.Add(fs.Position);
                 sw.WriteLine("{0} 0 obj", objp.Count);
                 sw.WriteLine("<<");
-                sw.WriteLine("  /Type /Pages /Count {0}", sizes.Length);
+                sw.WriteLine("  /Type /Pages /Count {0}", count);
                 if (r)
                     sw.WriteLine("  /Rotate 90");
                 sw.WriteLine("  /Kids");
                 sw.Write("  [");
-                for (int i = 0; i < sizes.Length; i++)
+                for (int i = 0; i < count; i++)
                 {
                     if ((i & 7) == 0)
                     {
                         sw.WriteLine();
                         sw.Write("   ");
                     }
-                    sw.Write(" {0} 0 R", no_r + 1 + i * 2);
+                    sw.Write(" {0} 0 R", no_p + 1 + i * 2);
                 }
                 sw.WriteLine();
                 sw.WriteLine("  ]");
                 sw.WriteLine(">>");
                 sw.WriteLine("endobj");
 
-                for (int i = 0; i < sizes.Length; i++)
+                for (int i = 0; i < count; i++)
                 {
                     var name = "/Jpeg" + (i + 1);
                     var sz = sizes[i];
@@ -755,12 +779,12 @@ namespace JpegBookMaker
                     objp.Add(fs.Position);
                     sw.WriteLine("{0} 0 obj", objp.Count);
                     sw.WriteLine("<<");
-                    sw.WriteLine("  /Type /Page /Parent {0} 0 R /Contents {1} 0 R", no_r, objp.Count + 1);
+                    sw.WriteLine("  /Type /Page /Parent {0} 0 R /Contents {1} 0 R", no_p, objp.Count + 1);
                     sw.WriteLine("  /MediaBox [ 0 0 {0} {1} ]", sz.Width, sz.Height);
                     sw.WriteLine("  /Resources");
                     sw.WriteLine("  <<");
                     sw.WriteLine("    /ProcSet [ /PDF /ImageB /ImageC /ImageI ]");
-                    sw.WriteLine("    /XObject << {0} {1} 0 R >>", name, 2 + i);
+                    sw.WriteLine("    /XObject << {0} {1} 0 R >>", name, no_j + i);
                     sw.WriteLine("  >>");
                     sw.WriteLine(">>");
                     sw.WriteLine("endobj");
@@ -791,6 +815,46 @@ namespace JpegBookMaker
                 sw.WriteLine("{0}", xref);
                 sw.WriteLine("%%EOF");
             }
+        }
+
+        private int writeSaveInfo(TextWriter tw)
+        {
+            tw.WriteLine("[Common]");
+            common.WriteSaveInfo(tw);
+
+            int ret = 0;
+            int count = 0;
+            Invoke(new Action(() =>
+            {
+                count = listView1.Items.Count;
+            }));
+            for (int i = 0; i < count; i++)
+            {
+                PageInfo lpi = null;
+                bool chk = false;
+                string text = "";
+                Invoke(new Action(() =>
+                {
+                    var li = listView1.Items[i];
+                    lpi = li.Tag as PageInfo;
+                    chk = li.Checked;
+                    text = li.Text;
+                }));
+                tw.WriteLine();
+                tw.WriteLine("[PageInfo.{0}]", i);
+                tw.WriteLine("Text={0}", Utils.URLEncode(text));
+                if (lpi == null)
+                    tw.WriteLine("IsNull=1");
+                else
+                {
+                    if (chk)
+                        tw.WriteLine("IsCommon=1");
+                    else
+                        lpi.WriteSaveInfo(tw);
+                    ret++;
+                }
+            }
+            return ret;
         }
 
         private int countBitmap()
@@ -844,7 +908,9 @@ namespace JpegBookMaker
                     using (var tmp = lpi.GetBitmap())
                         src = new Bitmap(tmp);
                 Utils.AdjustLevels(src, pi.IsGrayScale ? pi.Level : 5);
-                var box = pi == common && !isLeftPage(i) ? mirror(pi.Bounds, src) : pi.Bounds;
+                var box = pi.Bounds;
+                if (box.X < 0) box.X = src.Width + box.X - box.Width;
+                if (pi == common && !isLeftPage(i)) box = mirror(box, src);
                 using (var bmp = GetBitmap(src, box, ow, oh))
                 {
                     Utils.AdjustContrast(bmp, pi.IsGrayScale ? pi.Contrast * 16 : 128);
