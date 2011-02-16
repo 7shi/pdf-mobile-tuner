@@ -20,9 +20,11 @@ namespace JpegBookMaker
             InitializeComponent();
         }
 
-        protected override void OnClosed(EventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
-            base.OnClosed(e);
+            base.OnClosing(e);
+            e.Cancel = true;
+            Hide();
             if (backgroundWorker1.IsBusy)
                 backgroundWorker1.CancelAsync();
             groupBox1.Enabled = true;
