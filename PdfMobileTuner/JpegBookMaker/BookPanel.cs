@@ -142,7 +142,6 @@ namespace JpegBookMaker
 
             ShowPage(listView1.Items[0]);
             checkBox1.Enabled = true;
-            checkBox1.Checked = false;
             panel1.Focus();
         }
 
@@ -182,7 +181,6 @@ namespace JpegBookMaker
 
             ShowPage(listView1.Items[0]);
             checkBox1.Enabled = true;
-            checkBox1.Checked = false;
             panel1.Focus();
         }
 
@@ -193,6 +191,7 @@ namespace JpegBookMaker
             imagePath = null;
             RightBinding = false;
             stop = true;
+            ignore = true;
             SetBitmap(null, null);
             lastFocused = null;
             common.Level = defaultLevel;
@@ -200,10 +199,12 @@ namespace JpegBookMaker
             common.Bounds = Rectangle.Empty;
             trackBar1.Value = defaultLevel;
             trackBar2.Value = defaultContrast;
+            checkBox1.Enabled = false;
             checkBox1.Checked = false;
             lastFocused = null;
             OnBoxResize(EventArgs.Empty);
             listView1.Items.Clear();
+            ignore = false;
             stop = false;
         }
 
@@ -839,7 +840,9 @@ namespace JpegBookMaker
                     lpi = li.Tag as PageInfo;
                 }));
                 if (lpi == null) continue;
-                if (src == null) src = lpi.GetBitmap();
+                if (src == null)
+                    using (var tmp = lpi.GetBitmap())
+                        src = new Bitmap(tmp);
                 Utils.AdjustLevels(src, pi.IsGrayScale ? pi.Level : 5);
                 var box = pi == common && !isLeftPage(i) ? mirror(pi.Bounds, src) : pi.Bounds;
                 using (var bmp = GetBitmap(src, box, ow, oh))

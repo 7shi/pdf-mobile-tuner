@@ -174,7 +174,7 @@
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(117, 45);
             this.trackBar2.TabIndex = 2;
-            this.trackBar2.Value = 11;
+            this.trackBar2.Value = 9;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
             // checkBox1
