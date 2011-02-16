@@ -119,6 +119,7 @@ namespace PdfMobileTuner
                 toolStripStatusLabel2.Text = w + "x" + h;
                 toolStripStatusLabel3.Text = (h / w).ToString("0.00");
             }
+            statusStrip1.Refresh();
         }
 
         private void analyzerPanel1_ProgressChanged(object sender, ProgressChangedEventArgs e)
