@@ -14,13 +14,11 @@ namespace PdfMobileTuner
 {
     public partial class Form1 : Form
     {
-        private SaveDialog saveDialog = new SaveDialog();
         private BookPanelHelp help;
 
         public Form1()
         {
             InitializeComponent();
-            saveDialog.BookPanel = bookPanel1;
 #if DEBUG
             const string dir = @"D:\pdf2jpeg";
             if (Directory.Exists(dir))
@@ -46,8 +44,12 @@ namespace PdfMobileTuner
         {
             if (saveFileDialog1.ShowDialog(this) != DialogResult.OK) return;
 
-            saveDialog.PDF = saveFileDialog1.FileName;
-            saveDialog.ShowDialog(this);
+            using (var saveDialog = new SaveDialog())
+            {
+                saveDialog.BookPanel = bookPanel1;
+                saveDialog.PDF = saveFileDialog1.FileName;
+                saveDialog.ShowDialog(this);
+            }
         }
 
         private void openDirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -65,8 +67,12 @@ namespace PdfMobileTuner
 
         private void saveDirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveDialog.PDF = null;
-            saveDialog.ShowDialog(this);
+            using (var saveDialog = new SaveDialog())
+            {
+                saveDialog.BookPanel = bookPanel1;
+                saveDialog.PDF = null;
+                saveDialog.ShowDialog(this);
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

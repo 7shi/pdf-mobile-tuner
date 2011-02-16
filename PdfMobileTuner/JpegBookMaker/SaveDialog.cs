@@ -15,16 +15,39 @@ namespace JpegBookMaker
         public BookPanel BookPanel { get; set; }
         public string PDF { get; set; }
 
+        private static bool first = true, chk1, chk2, chk3;
+        private static int num1, num2;
+
         public SaveDialog()
         {
             InitializeComponent();
+            if (first)
+            {
+                setValues();
+                first = false;
+            }
+            else
+            {
+                checkBox1.Checked = chk1;
+                checkBox2.Checked = chk2;
+                checkBox3.Checked = chk3;
+                numericUpDown1.Value = num1;
+                numericUpDown2.Value = num2;
+            }
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        private void setValues()
         {
-            base.OnClosing(e);
-            e.Cancel = true;
-            Hide();
+            chk1 = checkBox1.Checked;
+            chk2 = checkBox2.Checked;
+            chk3 = checkBox3.Checked;
+            num1 = (int)numericUpDown1.Value;
+            num2 = (int)numericUpDown2.Value;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
             if (backgroundWorker1.IsBusy)
                 backgroundWorker1.CancelAsync();
             groupBox1.Enabled = true;
@@ -77,6 +100,7 @@ namespace JpegBookMaker
             if (e.Error != null)
                 MessageBox.Show(this, e.Error.ToString(), Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            setValues();
             Close();
         }
     }
